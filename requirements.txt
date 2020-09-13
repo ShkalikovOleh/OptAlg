@@ -1,0 +1,2 @@
+numpy
+autograd>=1.3
