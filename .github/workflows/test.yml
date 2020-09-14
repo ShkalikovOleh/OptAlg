@@ -1,11 +1,11 @@
-name: Python package
+name: Testing
 
 on:
   pull_request:
     branches: [master]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,4 +20,4 @@ jobs:
           pip install -r requirements.txt
       - name: Test with unittest
         run: |
-          python -m unittest discover
+          python -m unittest discover -v
