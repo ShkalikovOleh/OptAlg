@@ -19,3 +19,16 @@ class Optimizer(ABC):
             xmin = optimizer.optimize(f)
         """
         pass
+
+
+class OptimizerWithHistory(Optimizer):
+
+    def __init__(self):
+        super().__init__()
+        self._history = []
+
+    def get_last_history(self):
+        return self._history
+
+    def history_reset(self):
+        self._history = []
