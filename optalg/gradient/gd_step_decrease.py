@@ -27,7 +27,7 @@ class GradientDescentStepDecrease(GradientDescentOptimizer):
                 alphaK = alphaK * self.__beta
                 xnew = xk - alphaK * grad_value
 
-            self._history.append(xk)
             xk = xnew
+            self._history.append(xk)
 
         return xk

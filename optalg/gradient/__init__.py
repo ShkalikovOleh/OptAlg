@@ -1,1 +1,2 @@
 from .gd_step_decrease import GradientDescentStepDecrease
+from .gd_fastest import GradientDescentFastest

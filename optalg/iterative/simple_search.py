@@ -17,10 +17,10 @@ class SimpleSearch(Optimizer):
             n (int): number of iteration
         """
         super().__init__()
-        self.bounds = bounds
-        self.n = n
+        self.__bounds = bounds
+        self.__n = n
 
     def optimize(self, f):
-        x = np.linspace(self.bounds[0], self.bounds[1], self.n)
+        x = np.linspace(self.__bounds[0], self.__bounds[1], self.__n)
         y = f(x)
         return x[np.argmin(y)]
