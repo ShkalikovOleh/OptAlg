@@ -33,6 +33,7 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
 
             if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
                 pk = 0
+                iteration = 0
 
             pk = grad_value + b * pk
 
