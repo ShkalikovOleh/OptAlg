@@ -14,12 +14,13 @@ class GradientDescentStepDecrease(GradientDescentOptimizer):
         grad = egrad(f)
 
         xk = self._x0
-        alphaK = self.__alpha
 
         self._history = [xk, xk]
 
         while not self._stop_criteria.match(f, xk, self._history[-2]):
             grad_value = grad(xk)
+
+            alphaK = self.__alpha
             xnew = xk - alphaK * grad_value
 
             while f(xk) <= f(xnew):
