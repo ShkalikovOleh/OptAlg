@@ -16,10 +16,9 @@ class GradientDescentStepDecrease(GradientDescentOptimizer):
         xk = self._x0
         alphaK = self.__alpha
 
-        self.history_reset()
-        self._history.append(xk)
+        self._history = [xk, xk]
 
-        while not self._stop_criteria.match(f, xk, self._history[-1]):
+        while not self._stop_criteria.match(f, xk, self._history[-2]):
             grad_value = grad(xk)
             xnew = xk - alphaK * grad_value
 
@@ -29,5 +28,7 @@ class GradientDescentStepDecrease(GradientDescentOptimizer):
 
             xk = xnew
             self._history.append(xk)
+
+        self._history = self._history[1:]
 
         return xk

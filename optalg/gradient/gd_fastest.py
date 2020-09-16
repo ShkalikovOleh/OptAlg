@@ -13,14 +13,16 @@ class GradientDescentFastest(GradientDescentOptimizer):
         grad = egrad(f)
 
         xk = self._x0
-        self._history = [xk]
+        self._history = [xk, xk]
 
-        while not self._stop_criteria.match(f, xk, self._history[-1]):
+        while not self._stop_criteria.match(f, xk, self._history[-2]):
             grad_value = grad(xk)
 
             a = self.__step_optimizer.optimize(lambda a: f(xk - a * grad_value))
 
             xk = xk - a * grad_value
             self._history.append(xk)
+
+        self._history = self._history[1:]
 
         return xk
