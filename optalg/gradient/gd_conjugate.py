@@ -1,10 +1,9 @@
 import numpy as np
 from autograd import elementwise_grad as egrad
-from ..optimizer import OptimizerWithHistory
 from .gradient_descent import GradientDescentOptimizer
 
 
-class ConjugateDirectionsDescent(GradientDescentOptimizer):
+class ConjugateGradientsDescent(GradientDescentOptimizer):
     """
     Method of conjugate directions
 
@@ -12,9 +11,10 @@ class ConjugateDirectionsDescent(GradientDescentOptimizer):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, x0, stop_criteria, step_optimizer):
+    def __init__(self, x0, stop_criteria, step_optimizer, reset_iteration_number):
         super().__init__(x0, stop_criteria)
         self.__step_optimizer = step_optimizer
+        self.__reset_iteration_number = reset_iteration_number
 
     def optimize(self, f):
         grad = egrad(f)
@@ -23,11 +23,17 @@ class ConjugateDirectionsDescent(GradientDescentOptimizer):
         pk = 0
         self._history = [xk, xk]
 
+        iteration = 0
         while not self._stop_criteria.match(f, xk, self._history[-2]):
             grad_value = grad(xk)
+            iteration += 1
 
             b = np.linalg.norm(grad_value)**2 / \
                 np.linalg.norm(grad(self._history[-2]))**2
+
+            if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
+                pk = 0
+
             pk = grad_value + b * pk
 
             a = self.__step_optimizer.optimize(
