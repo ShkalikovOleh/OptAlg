@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import numpy as np
 
 
 class Optimizer(ABC):
@@ -28,7 +29,7 @@ class OptimizerWithHistory(Optimizer):
         self._history = []
 
     def get_last_history(self):
-        return self._history
+        return np.array(self._history)[..., 0].T
 
     def history_reset(self):
         self._history = []

@@ -30,4 +30,4 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         opt = ConjugateGradientsDescent(np.array([[0], [0]]), nCriteria, step_opt, 3)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, len(opt.get_last_history()) - 1)
+        self.assertEqual(iteration_count, opt.get_last_history().shape[1] - 1)

@@ -30,4 +30,4 @@ class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
         opt = GradientDescentFastest(np.array([-3]), nCriteria, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, len(opt.get_last_history()) - 1)
+        self.assertEqual(iteration_count, opt.get_last_history().shape[0] - 1)
