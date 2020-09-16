@@ -5,7 +5,7 @@ from .gradient_descent import GradientDescentOptimizer
 
 class ConjugateGradientsDescent(GradientDescentOptimizer):
     """
-    Method of conjugate directions
+    Method of conjugate gradients
 
     Descent direction is the sum of gradient in current point
     and the weighted direction from the previous iteration
