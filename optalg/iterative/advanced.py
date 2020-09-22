@@ -23,15 +23,17 @@ class Fibonacci(Optimizer):
 
     def optimize(self, f):
         diam = self.b - self.a
-        F1, F2, F3 = 1, 1, 0
+        F1, F2, F3 = 1, 1, 2
         j = 1
-        while not F2 < diam/self.__epsilon <= F3:
-            F1, F2, F3 = F2, F3, F1+F2
+        while not (F2 < diam/self.__epsilon <= F3):
+            F1, F2, F3 = F2, F3, F2+F3
             j = j+1
         m = j
         
-        y = self.a + diam * F1/F3
-        z = self.a + self.b - y
+        k = diam * F1/F3
+        y = self.a + k
+        z = self.b - k
+
         if f(y) <= f(z):
             a = self.a
             b = z
@@ -39,16 +41,16 @@ class Fibonacci(Optimizer):
             a = y
             b = self.b
 
-        k = 0
+        k = 1
         while k<m-1:
             k=k+1
-            
             if f(y) <= f(z):
-                y = a + b - y
                 z = y
+                y = a + b - y
             else:
                 y = z
                 z = a + b - z
+                
             if f(y) <= f(z):
                 b = z
             else:
