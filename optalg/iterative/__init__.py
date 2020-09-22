@@ -1,2 +1,2 @@
 from .simple_search import SimpleSearch
-from .advanced import Fibonacci
+from .advanced import Fibonacci, ModFibonacci
