@@ -6,7 +6,7 @@ Methods based on iteration over values and calculating the function for each of 
 
 - [SimpleSearch](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/iterative/simple_search.py) - uniform selection of n values from the interval.
 
-- [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/iterative/advanced.py#L4) - 1-dimensional optimisation for **unimodal** functions. Consequently converges search region until diameter < epsilon; x_min is center of resulting region
+- [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/iterative/fibonacci.py) - 1-dimensional optimisation for **unimodal** functions. Consequently converges search region until diameter < epsilon; x_min is center of resulting region.
 
 ## Gradient
 Methods based on descent to minimum by gradient-like direction.
