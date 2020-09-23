@@ -1,5 +1,6 @@
 import numpy as np
 from autograd import elementwise_grad as egrad
+from abc import abstractmethod
 from .gradient_descent import GradientDescentOptimizer
 
 
@@ -16,11 +17,15 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
         self.__step_optimizer = step_optimizer
         self.__reset_iteration_number = reset_iteration_number
 
+    @abstractmethod
+    def _step(self, gradk, gradprev, sprev):
+        pass
+
     def optimize(self, f):
         grad = egrad(f)
 
         xk = self._x0
-        pk = 0
+        pk = np.zeros_like(xk)
         self._history = [xk, xk]
 
         iteration = 0
@@ -28,8 +33,7 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
             grad_value = grad(xk)
             iteration += 1
 
-            b = np.linalg.norm(grad_value)**2 / \
-                np.linalg.norm(grad(self._history[-2]))**2
+            b = self._step(grad_value, grad(self._history[-2]), pk)
 
             if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
                 pk = 0
@@ -46,3 +50,23 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
         self._history = self._history[1:]
 
         return xk
+
+
+class FletcherReeves(ConjugateGradientsDescent):
+
+    def _step(self, gradk, gradprev, sprev):
+        numerator = np.linalg.norm(gradk)**2
+        denominator = np.linalg.norm(gradprev)**2
+        return numerator / denominator
+
+
+class HestenesStiefel(ConjugateGradientsDescent):
+
+    def _step(self, gradk, gradprev, sprev):
+        grad_dif = gradk - gradprev
+        numerator = np.dot(gradk.T, grad_dif)
+        denominator = -np.dot(sprev.T, grad_dif)
+        if np.linalg.norm(denominator) == 0:
+            return 0
+        else:
+            return numerator / denominator
