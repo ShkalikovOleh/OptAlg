@@ -57,7 +57,10 @@ class FletcherReeves(ConjugateGradientsDescent):
     def _step(self, gradk, gradprev, sprev):
         numerator = np.linalg.norm(gradk)**2
         denominator = np.linalg.norm(gradprev)**2
-        return numerator / denominator
+        if np.linalg.norm(denominator) == 0:
+            return 0
+        else:
+            return numerator / denominator
 
 
 class HestenesStiefel(ConjugateGradientsDescent):
@@ -66,6 +69,18 @@ class HestenesStiefel(ConjugateGradientsDescent):
         grad_dif = gradk - gradprev
         numerator = np.dot(gradk.T, grad_dif)
         denominator = -np.dot(sprev.T, grad_dif)
+        if np.linalg.norm(denominator) == 0:
+            return 0
+        else:
+            return numerator / denominator
+
+
+class PolakRibier(ConjugateGradientsDescent):
+
+    def _step(self, gradk, gradprev, sprev):
+        grad_dif = gradk - gradprev
+        numerator = np.dot(gradk.T, grad_dif)
+        denominator = np.linalg.norm(gradprev)**2
         if np.linalg.norm(denominator) == 0:
             return 0
         else:
