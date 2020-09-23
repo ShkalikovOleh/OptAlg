@@ -85,3 +85,15 @@ class PolakRibier(ConjugateGradientsDescent):
             return 0
         else:
             return numerator / denominator
+
+
+class DaiYuan(ConjugateGradientsDescent):
+
+    def _step(self, gradk, gradprev, sprev):
+        grad_dif = gradk - gradprev
+        numerator = np.linalg.norm(gradk)**2
+        denominator = -np.dot(sprev.T, grad_dif)
+        if np.linalg.norm(denominator) == 0:
+            return 0
+        else:
+            return numerator / denominator

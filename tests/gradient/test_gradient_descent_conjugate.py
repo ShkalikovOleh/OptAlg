@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from optalg.iterative import SimpleSearch
-from optalg.gradient import HestenesStiefel, FletcherReeves, PolakRibier
+from optalg.gradient import HestenesStiefel, FletcherReeves, PolakRibier, DaiYuan
 from optalg.stop_criteria import GradientNormCriteria
 from optalg.stop_criteria import IterationNumberCriteria
 from ..inrange_assertion import InRangeAssertion
@@ -37,6 +37,13 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
     def test_polak_ribier(self):
         opt = PolakRibier(self.__x0, self.__gnCriteria,
                               self.__step_opt, self.__n)
+        x_opt = opt.optimize(self.f)
+
+        self.assertInRange(x_opt, self.__opt, 10**-3)
+
+    def test_dai_yuan(self):
+        opt = DaiYuan(self.__x0, self.__gnCriteria,
+                          self.__step_opt, self.__n)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, self.__opt, 10**-3)
