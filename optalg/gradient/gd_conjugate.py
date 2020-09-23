@@ -18,7 +18,7 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
         self.__reset_iteration_number = reset_iteration_number
 
     @abstractmethod
-    def _step(self, gradk, gradprev, sprev):
+    def _b_step(self, gradk, gradprev, sprev):
         pass
 
     def optimize(self, f):
@@ -33,7 +33,7 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
             grad_value = grad(xk)
             iteration += 1
 
-            b = self._step(grad_value, grad(self._history[-2]), pk)
+            b = self._b_step(grad_value, grad(self._history[-2]), pk)
 
             if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
                 pk = 0
@@ -54,7 +54,7 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
 
 class FletcherReeves(ConjugateGradientsDescent):
 
-    def _step(self, gradk, gradprev, sprev):
+    def _b_step(self, gradk, gradprev, sprev):
         numerator = np.linalg.norm(gradk)**2
         denominator = np.linalg.norm(gradprev)**2
         if np.linalg.norm(denominator) == 0:
@@ -65,7 +65,7 @@ class FletcherReeves(ConjugateGradientsDescent):
 
 class HestenesStiefel(ConjugateGradientsDescent):
 
-    def _step(self, gradk, gradprev, sprev):
+    def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
         numerator = np.dot(gradk.T, grad_dif)
         denominator = -np.dot(sprev.T, grad_dif)
@@ -77,7 +77,7 @@ class HestenesStiefel(ConjugateGradientsDescent):
 
 class PolakRibier(ConjugateGradientsDescent):
 
-    def _step(self, gradk, gradprev, sprev):
+    def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
         numerator = np.dot(gradk.T, grad_dif)
         denominator = np.linalg.norm(gradprev)**2
@@ -89,7 +89,7 @@ class PolakRibier(ConjugateGradientsDescent):
 
 class DaiYuan(ConjugateGradientsDescent):
 
-    def _step(self, gradk, gradprev, sprev):
+    def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
         numerator = np.linalg.norm(gradk)**2
         denominator = -np.dot(sprev.T, grad_dif)
