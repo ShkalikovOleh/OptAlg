@@ -16,3 +16,8 @@ Methods based on descent to minimum by gradient-like direction.
 - [Gradient descent fastest](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/gradient/gd_fastest.py) - gradient descent with step determine by other optimizer.
 
 - [Cojugate gradients descent](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/gradient/gd_conjugate.py) - descent direction is the sum of gradient in current point and the weighted direction from the previous iteration.
+Avaliable variations:
+  - Fletcher–Reeves
+  - Polak–Ribiere
+  - Hestenes-Stiefel
+  - Dai–Yuan
