@@ -12,7 +12,8 @@ optimizer = <algo-name>(params...)
 xmin = optimizer.optimize(f)
 ```
 
-For methods **requiring gradient and hessian calculations, use** `autograd.numpy` instead of `numpy`.
+For methods **requiring gradient and hessian calculations, use** `autograd.numpy` instead of `numpy`
+to define objective function.
 For example:
 
 ```python
@@ -24,7 +25,7 @@ def f(x):
   return np.sin(x[0])**2 + np.sin(x[1])**2
 
 gnCriterion = GradientNormCriterion(10**-3)
-optimizer = GradientDescentStepDecrease(np.array([-3]), 1, 0.5, gnCriterion)
+optimizer = GradientDescentStepDecrease(np.array([[-3],[4]]), 1, 0.5, gnCriterion)
 xmin = optimizer.optimize(f)
 ```
 
