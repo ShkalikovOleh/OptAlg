@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 from optalg.iterative import SimpleSearch
 from optalg.gradient import HestenesStiefel, FletcherReeves, PolakRibier, DaiYuan
-from optalg.stop_criteria import GradientNormCriteria
-from optalg.stop_criteria import IterationNumberCriteria
+from optalg.stop_criteria import GradientNormCriterion
+from optalg.stop_criteria import IterationNumberCriterion
 from ..inrange_assertion import InRangeAssertion
 
 
@@ -15,34 +15,34 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
 
     def setUp(self):
         self.__x0 = np.array([[0], [0]])
-        self.__gnCriteria = GradientNormCriteria(10**-3)
+        self.__gnCriterion = GradientNormCriterion(10**-3)
         self.__step_opt = SimpleSearch((10 ** -3, 1), 100)
         self.__n = 3
         self.__opt = np.array([[3], [1]])
 
     def test_fletcher_reeves(self):
-        opt = FletcherReeves(self.__x0, self.__gnCriteria,
+        opt = FletcherReeves(self.__x0, self.__gnCriterion,
                               self.__step_opt, self.__n)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, self.__opt, 10**-3)
 
     def test_hestenes_stiefel(self):
-        opt = HestenesStiefel(self.__x0, self.__gnCriteria,
+        opt = HestenesStiefel(self.__x0, self.__gnCriterion,
                              self.__step_opt, self.__n)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, self.__opt, 10**-3)
 
     def test_polak_ribier(self):
-        opt = PolakRibier(self.__x0, self.__gnCriteria,
+        opt = PolakRibier(self.__x0, self.__gnCriterion,
                               self.__step_opt, self.__n)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, self.__opt, 10**-3)
 
     def test_dai_yuan(self):
-        opt = DaiYuan(self.__x0, self.__gnCriteria,
+        opt = DaiYuan(self.__x0, self.__gnCriterion,
                           self.__step_opt, self.__n)
         x_opt = opt.optimize(self.f)
 
@@ -50,10 +50,10 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
 
     def test_get_history(self):
         iteration_count = 10
-        nCriteria = IterationNumberCriteria(iteration_count)
+        nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = SimpleSearch((10**-3, 1), 100)
 
-        opt = HestenesStiefel(np.array([[0], [0]]), nCriteria, step_opt, 3)
+        opt = HestenesStiefel(np.array([[0], [0]]), nCriterion, step_opt, 3)
         x_opt = opt.optimize(self.f)
 
         self.assertEqual(iteration_count, opt.get_last_history().shape[1] - 1)

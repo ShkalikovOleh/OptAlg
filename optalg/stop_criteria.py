@@ -3,14 +3,14 @@ import numpy as np
 from autograd import elementwise_grad as egrad
 
 
-class StopCriteria(ABC):
+class StopCriterion(ABC):
 
     @abstractmethod
     def match(self, f, xk, xprev):
         pass
 
 
-class IterationNumberCriteria(StopCriteria):
+class IterationNumberCriterion(StopCriterion):
 
     def __init__(self, n):
         super().__init__()
@@ -29,14 +29,14 @@ class IterationNumberCriteria(StopCriteria):
         self.__current = 0
 
 
-class NormCriteria(StopCriteria):
+class NormCriterion(StopCriterion):
 
     def __init__(self, epsilon):
         super().__init__()
         self._epsilon = epsilon
 
 
-class GradientNormCriteria(NormCriteria):
+class GradientNormCriterion(NormCriterion):
 
     def __init__(self, epsilon):
         super().__init__(epsilon)
@@ -49,7 +49,7 @@ class GradientNormCriteria(NormCriteria):
             return True
 
 
-class ArgumentNormCriteria(NormCriteria):
+class ArgumentNormCriterion(NormCriterion):
 
     def __init__(self, epsilon, detect_first_iteration=True):
         super().__init__(epsilon)
@@ -67,7 +67,7 @@ class ArgumentNormCriteria(NormCriteria):
             return True
 
 
-class FunctionNormCriteria(NormCriteria):
+class FunctionNormCriterion(NormCriterion):
 
     def __init__(self, epsilon, detect_first_iteration=True):
         super().__init__(epsilon)
@@ -83,3 +83,32 @@ class FunctionNormCriteria(NormCriteria):
         else:
             self.first_iteration = self.detect_first_iteration
             return True
+
+
+class CompoundCriterion(StopCriterion):
+
+    def __init__(self, criteria_list):
+        super().__init__()
+        self._criteria = criteria_list
+
+
+class OrCriterion(CompoundCriterion):
+
+    def __init__(self, criteria_list):
+        super().__init__(criteria_list)
+
+    def match(self, f, xk, xprev):
+        match_result = [self._criteria[i].match(f, xk, xprev)
+                        for i in range(len(self._criteria))]
+        return np.logical_or.reduce(match_result)
+
+
+class AndCriterion(CompoundCriterion):
+
+    def __init__(self, criteria_list):
+        super().__init__(criteria_list)
+
+    def match(self, f, xk, xprev):
+        match_result = [self._criteria[i].match(f, xk, xprev)
+                        for i in range(len(self._criteria))]
+        return np.logical_and.reduce(match_result)
