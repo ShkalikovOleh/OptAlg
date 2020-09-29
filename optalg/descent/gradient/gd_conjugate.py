@@ -28,7 +28,8 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
         grad_value = self._grad(xk)
 
         self._iteration_number += 1
-        if self.__reset_iteration_number >= self._iteration_number:
+        if self.__reset_iteration_number <= self._iteration_number:
+            self._iteration_number = 0
             return grad_value
         else:
             pre_grad_value = self._grad(self._get_prelast())
