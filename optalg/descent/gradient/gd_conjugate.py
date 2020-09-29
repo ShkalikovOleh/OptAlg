@@ -26,17 +26,18 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
 
         xk = self._x0
         pk = np.zeros_like(xk)
-        self._history = [xk, xk]
+        self.history_reset()
+        self.append_history(xk)
 
         iteration = 0
-        while not self._stop_criteria.match(f, xk, self._history[-2]):
+        while not self._stop_criteria.match(f, xk, self._get_prelast()):
             grad_value = grad(xk)
             iteration += 1
 
-            b = self._b_step(grad_value, grad(self._history[-2]), pk)
+            b = self._b_step(grad_value, grad(self._get_prelast()), pk)
 
             if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
-                pk = 0
+                pk = np.zeros_like(xk)
                 iteration = 0
 
             pk = grad_value + b * pk
@@ -46,8 +47,6 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
 
             xk = xk - a * pk
             self._history.append(xk)
-
-        self._history = self._history[1:]
 
         return xk
 

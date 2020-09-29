@@ -35,5 +35,20 @@ class OptimizerWithHistory(Optimizer):
         else:
             return arr
 
+    def append_history(self, xs):
+        self._history.append(xs)
+
     def history_reset(self):
         self._history = []
+
+    def _get_prelast(self):
+        """
+        Get previous of the last elements in the history
+        If the history contains only 1 element return last
+        """
+        if len(self._history) == 0:
+            return None
+        elif len(self._history) == 1:
+            return self._history[0]
+        else:
+            return self._history[-2]
