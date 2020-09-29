@@ -1,4 +1,4 @@
-from ..optimizer import OptimizerWithHistory
+from ...optimizer import OptimizerWithHistory
 
 
 class GradientDescentOptimizer(OptimizerWithHistory):

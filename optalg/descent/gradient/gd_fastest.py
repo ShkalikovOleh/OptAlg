@@ -1,5 +1,4 @@
 from autograd import elementwise_grad as egrad
-from ..optimizer import OptimizerWithHistory
 from .gradient_descent import GradientDescentOptimizer
 
 

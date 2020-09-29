@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from optalg.gradient import GradientDescentStepDecrease
+from optalg.descent import GradientDescentStepDecrease
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
-from ..inrange_assertion import InRangeAssertion
+from ...inrange_assertion import InRangeAssertion
 
 
 class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
