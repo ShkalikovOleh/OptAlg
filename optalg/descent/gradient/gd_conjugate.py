@@ -1,10 +1,10 @@
 import numpy as np
 from autograd import elementwise_grad as egrad
 from abc import abstractmethod
-from ..descent_base import DescentOptimizerBase
+from ..descent_base import FastestDescentBase
 
 
-class ConjugateGradientsDescent(DescentOptimizerBase):
+class ConjugateGradientsDescent(FastestDescentBase):
     """
     Method of conjugate gradients
 
@@ -13,16 +13,12 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
     """
 
     def __init__(self, x0, stop_criterion, step_optimizer, reset_iteration_number):
-        super().__init__(x0, stop_criterion)
-        self.__step_opt = step_optimizer
+        super().__init__(x0, stop_criterion, step_optimizer)
         self.__reset_iteration_number = reset_iteration_number
 
     @abstractmethod
     def _b_step(self, gradk, gradprev, sprev):
         pass
-
-    def _get_a(self, f, xk, pk):
-        return self.__step_opt.optimize(lambda a: f(xk - a * pk))
 
     def _get_pk(self, f, xk, pprev):
         grad_value = self._grad(xk)

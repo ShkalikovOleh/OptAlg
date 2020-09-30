@@ -25,11 +25,11 @@ def f(x):
   return np.sin(x[0])**2 + np.sin(x[1])**2
 
 gnCriterion = GradientNormCriterion(10**-3)
-optimizer = GradientDescentStepDecrease(np.array([[-3],[4]]), 1, 0.5, gnCriterion)
+optimizer = GradientDescentStepDecrease(np.array([[-3],[4]]), gnCriterion, 1, 0.5)
 xmin = optimizer.optimize(f)
 ```
 
-## Algorithms types
+## Available algorithms
 
 ### Iterative
 Methods based on iteration over values and calculating the function for each of them.
@@ -49,7 +49,7 @@ Methods based on descent to minimum by gradient-like direction.
 
 - [Cojugate gradients descent](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/descent/gradient/gd_conjugate.py) - descent direction is the sum of gradient in current point and the weighted direction from the previous iteration.
 Avaliable variations:
-  - Fletcher–Reeves
-  - Polak–Ribiere
+  - Fletcher-Reeves
+  - Polak-Ribiere
   - Hestenes-Stiefel
-  - Dai–Yuan
+  - Dai-Yuan

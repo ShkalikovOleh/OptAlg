@@ -46,3 +46,31 @@ class DescentOptimizerBase(OptimizerWithHistory):
             self._history.append(xk)
 
         return xk
+
+
+class FastestDescentBase(DescentOptimizerBase):
+
+    def __init__(self, x0, stop_criterion, step_opt, **kwargs):
+        super().__init__(x0, stop_criterion, **kwargs)
+        self._step_opt = step_opt
+
+    def _get_a(self, f, xk, pk):
+        return self._step_opt.optimize(lambda a: f(xk - a * pk))
+
+
+class StepDecreaseDescentBase(DescentOptimizerBase):
+
+    def __init__(self, x0, stop_criterion, a, b, **kwargs):
+        super().__init__(x0, stop_criterion, **kwargs)
+        self._a = a
+        self._b = b
+
+    def _get_a(self, f, xk, pk):
+        alphaK = self._a
+        xnew = xk - alphaK * pk
+
+        while f(xk) <= f(xnew):
+            alphaK = alphaK * self._b
+            xnew = xk - alphaK * pk
+
+        return alphaK

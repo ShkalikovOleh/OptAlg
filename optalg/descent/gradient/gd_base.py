@@ -4,8 +4,8 @@ from ..descent_base import DescentOptimizerBase
 
 class SimpleGradientDescentBase(DescentOptimizerBase):
 
-    def __init__(self, x0, stop_criterion):
-        super().__init__(x0, stop_criterion)
+    def __init__(self, x0, stop_criterion, **kwargs):
+        super().__init__(x0, stop_criterion, **kwargs)
 
     def _get_pk(self, f, xk, pprev):
         return self._grad(xk)
