@@ -1,7 +1,6 @@
 from ..optimizer import OptimizerWithHistory
 import numpy as np
 from copy import deepcopy
-from itertools import product
 
 
 # value_range is a tuple of 2 elements
@@ -20,16 +19,10 @@ def generate(length):
     return np.random.randint(2, size=length)
 
 
-def convert_history(obj_history):
-    history = np.array([[[tuple(ab.get_coordinates()), ab.get_affinity()]
-                         for ab in gen] for gen in obj_history])
-    return history
-
-
 # antibody's coordinates are binary strings of length 22 representing coded real values
 class Antibody:
-    def __init__(self, n_variables, x_range):
-        self.__id = 0
+    def __init__(self, n_variables, x_range, id=0):
+        self.__id = id
         self.__affinity = 0
         self.__x_range = x_range
         self.__x_bin = np.array([generate(22) for i in range(n_variables)])
@@ -51,20 +44,20 @@ class Antibody:
         for i in range(self.__x_bin.shape[0]):
             self.__x_bin[i, mask[i]] = 1 - self.__x_bin[i, mask[i]]
 
-    # not pythonic, should change it later
-    def get_affinity(self):
+    @property
+    def affinity(self):
         return self.__affinity
 
-    def get_id(self):
+    @property
+    def id(self):
         return self.__id
 
-    def set_id(self, index):
-        self.__id = index
-
-    def get_x(self):
+    @property
+    def x_bin(self):
         return self.__x_bin
 
-    def set_x(self, x_bin):
+    @x_bin.setter
+    def x_bin(self, x_bin):
         self.__x_bin = x_bin
 
 
@@ -99,31 +92,26 @@ class ClonAlg(OptimizerWithHistory):
 
     # comparing mutants to their parents and replacing
     def _insert(self):
-        for (clone, ab) in product(self._temp_population, self._population):
-            parent = clone.get_id()
-            if ab.get_id() == parent and ab.get_affinity() > clone.get_affinity():
-                # ab = deepcopy(clone)
-                ab.set_x(clone.get_x())
+        for ab in self._population:
+            for clone in self._temp_population:
+                if ab.id == clone.id and ab.affinity > clone.affinity:
+                    ab.x_bin = clone.x_bin
 
     # replacing d antibodies with low affinity with new generated antibodies
     def _edit(self):
         for i in range(self.to_replace):
-            self._population[-(i+1)] = Antibody(self.n_variables, self.x_range)
+            self._population[-(i+1)] = Antibody(self.n_variables, self.x_range, id=self._population[-(i+1)].id)
 
-    def _reindex(self, population):
-        for j in range(self.population_size):
-            population[j].set_id(j)
-
-    def get_history(self):
+    @property
+    def history(self):
         return self._history
 
     def optimize(self, f):
         self.history_reset()
-        self._population = [Antibody(self.n_variables, self.x_range) for i in range(self.population_size)]
+        self._population = [Antibody(self.n_variables, self.x_range, id=i) for i in range(self.population_size)]
         self._affinity(self._population, f)
-        self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
-        self._reindex(self._population)
-        self._history.append(self._population)
+        self._population = sorted(self._population, key=lambda ab: ab.affinity)
+        self._history.append([ab.get_coordinates() for ab in self._population])
 
         g = self.n_generations
         while g > 0:
@@ -132,14 +120,11 @@ class ClonAlg(OptimizerWithHistory):
             self._mutate()
             self._affinity(self._temp_population, f)
             self._insert()
-            self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
+            self._population = sorted(self._population, key=lambda ab: ab.affinity)
             self._edit()
             self._affinity(self._population, f)
-            self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
-            self._reindex(self._population)
-            self._history.append(self._population)
-            print("Generations completed: ", self.n_generations-g+1, "Best result: ",
-                  self._population[0].get_affinity())
+            self._population = sorted(self._population, key=lambda ab: ab.affinity)
+            self._history.append([ab.get_coordinates() for ab in self._population])
             g -= 1
 
-        return self._population
+        return self._population[0].get_coordinates()
