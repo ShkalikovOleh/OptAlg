@@ -29,7 +29,11 @@ class OptimizerWithHistory(Optimizer):
         self._history = []
 
     def get_last_history(self):
-        return np.array(self._history)[..., 0].T
+        arr = np.array(self._history)
+        if arr.size > 0:
+            return arr[..., 0].T
+        else:
+            return arr
 
     def history_reset(self):
         self._history = []
