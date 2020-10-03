@@ -1,9 +1,12 @@
 from ..optimizer import OptimizerWithHistory
 import numpy as np
+from copy import deepcopy
+from itertools import product
 
 
+# value_range is a tuple of 2 elements
 def decode(bin_code, value_range):
-    dec_code = 0
+    dec_code = 0.0
     l = len(bin_code)
     i = l-1
     while i > 0:
@@ -17,100 +20,126 @@ def generate(length):
     return np.random.randint(2, size=length)
 
 
+def convert_history(obj_history):
+    history = np.array([[[tuple(ab.get_coordinates()), ab.get_affinity()]
+                         for ab in gen] for gen in obj_history])
+    return history
+
+
 # antibody's coordinates are binary strings of length 22 representing coded real values
 class Antibody:
-    def __init__(self, id):
-        self._id = id         # used to identify clones' parents,
-        # maybe i will come up with a better solution later
-        self._affinity = 0
-        self._x1_bin = generate(22)
-        self._x2_bin = generate(22)
+    def __init__(self, n_variables, x_range):
+        self.__id = 0
+        self.__affinity = 0
+        self.__x_range = x_range
+        self.__x_bin = np.array([generate(22) for i in range(n_variables)])
 
-    def compute_affinity(self, f, x1_range, x2_range):
-        x1_dec = decode(self._x1_bin, x1_range)
-        x2_dec = decode(self._x2_bin, x2_range)
-        self._affinity = f(x1_dec, x2_dec)
-        pass
+    def get_coordinates(self):
+        x_dec = []
+        for i in range(len(self.__x_bin)):
+            x_dec.append(decode(self.__x_bin[i], self.__x_range[i]))
+        return x_dec
 
-    # temporal mutation method with fixed mutating bit
-    # mutation rate should depend on affinity
+    def compute_affinity(self, f):
+        x_dec = self.get_coordinates()
+        self.__affinity = f(np.array(x_dec))
+
     def mutate(self, mutation_probability):
-        if np.random.random() < mutation_probability:
-            self._x1_bin[6] = int(not self._x1_bin[6])
-        if np.random.random() < mutation_probability:
-            self._x2_bin[6] = int(not self._x2_bin[6])
-        pass
+        mask = [np.random.choice([True, False], size=self.__x_bin.shape[1],
+                                 p=[mutation_probability, 1 - mutation_probability])
+                for i in range(self.__x_bin.shape[0])]
+        for i in range(self.__x_bin.shape[0]):
+            self.__x_bin[i, mask[i]] = 1 - self.__x_bin[i, mask[i]]
 
-    # not pythonic though, should read more about getters in python
+    # not pythonic, should change it later
     def get_affinity(self):
-        return self._affinity
+        return self.__affinity
 
     def get_id(self):
-        return self._id
+        return self.__id
+
+    def set_id(self, index):
+        self.__id = index
+
+    def get_x(self):
+        return self.__x_bin
+
+    def set_x(self, x_bin):
+        self.__x_bin = x_bin
 
 
-# should consider reading more about other immune algorithms to create base AIS class
-# for functions of two variables
-class Clonalg(OptimizerWithHistory):
-    def __init__(self, population_size, clone_multiplier,
-                 max_mutation_rate):
+class ClonAlg(OptimizerWithHistory):
+    def __init__(self, n_variables, x_range, population_size=10, n_generations=30, clone_multiplier=5,
+                 max_mutation_rate=0.3, to_replace=2):
         super().__init__()
-        self._population_size = population_size
         self._population = []
         self._temp_population = []
-        self._clone_multiplier = clone_multiplier
-        self._max_mutation_rate = max_mutation_rate
-        i = 0
-        while i < population_size:
-            self._population.append(Antibody(i))
-            i += 1
-        pass
+        self.clone_multiplier = clone_multiplier
+        self.max_mutation_rate = max_mutation_rate
+        self.to_replace = to_replace
+        self.x_range = x_range
+        self.population_size = population_size
+        self.n_variables = n_variables
+        self.n_generations = n_generations
 
-    def _affinity(self, population, f, x1_range, x2_range):
+    @staticmethod
+    def _affinity(population, f):
         for ab in population:
-            ab.compute_affinity(f, x1_range, x2_range)
+            ab.compute_affinity(f)
 
     def _clone(self):
         for ab in self._population:
-            self._temp_population.append([ab]*self._clone_multiplier)
+            for i in range(self.clone_multiplier):
+                self._temp_population.append(deepcopy(ab))
 
     def _mutate(self):
-        for j, ab in enumerate(self._temp_population):
-            ab[1].mutate(self._max_mutation_rate*j/self._population_size)
+        l = self.population_size*self.clone_multiplier
+        for j in range(l):
+            self._temp_population[j].mutate(self.max_mutation_rate * (j + 1) / l)
 
     # comparing mutants to their parents and replacing
-    def _replace(self):
-        for ab in self._temp_population:
-            parent = ab.get_id()
-            if ab.get_affinity() > self._population[parent].get_affinity():
-                self._population[parent] = ab
-            pass
+    def _insert(self):
+        for (clone, ab) in product(self._temp_population, self._population):
+            parent = clone.get_id()
+            if ab.get_id() == parent and ab.get_affinity() > clone.get_affinity():
+                # ab = deepcopy(clone)
+                ab.set_x(clone.get_x())
 
     # replacing d antibodies with low affinity with new generated antibodies
     def _edit(self):
-        pass
+        for i in range(self.to_replace):
+            self._population[-(i+1)] = Antibody(self.n_variables, self.x_range)
+
+    def _reindex(self, population):
+        for j in range(self.population_size):
+            population[j].set_id(j)
+
+    def get_history(self):
+        return self._history
 
     def optimize(self, f):
-        pass
+        self.history_reset()
+        self._population = [Antibody(self.n_variables, self.x_range) for i in range(self.population_size)]
+        self._affinity(self._population, f)
+        self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
+        self._reindex(self._population)
+        self._history.append(self._population)
 
-    # x1_range/x2_range - a tuple of two elements containing limits of a region in format (x_min, x_max)
-    # wil move these parameters to init and implement optimize(f) method later
-    # def clonalg(self, f, x1_range, x2_range, n_generations, maximize=True):
-    #     while n_generations > 0:
-    #         self._affinity(f, self._population, x1_range, x2_range)
-    #
-    #         self._clone()
-    #
-    #         sorted(self._temp_population, key=lambda ab: ab.get_affinity())
-    #
-    #         self._mutate()
-    #
-    #         self._affinity(f, self._temp_population, x1_range, x2_range)
-    #
-    #         self._replace()
-    #
-    #         sorted(self._population, key=lambda ab: ab.get_affinity())
-    #
-    #         self._edit()
-    #
-    #         n_generations -= 1
+        g = self.n_generations
+        while g > 0:
+            self._temp_population = []
+            self._clone()
+            self._mutate()
+            self._affinity(self._temp_population, f)
+            self._insert()
+            self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
+            self._edit()
+            self._affinity(self._population, f)
+            self._population = sorted(self._population, key=lambda ab: ab.get_affinity())
+            self._reindex(self._population)
+            self._history.append(self._population)
+            print("Generations completed: ", self.n_generations-g+1, "Best result: ",
+                  self._population[0].get_affinity())
+            g -= 1
+
+        return self._population

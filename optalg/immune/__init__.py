@@ -1,1 +1,1 @@
-from .clonalg import Clonalg
+from .clonalg import ClonAlg
