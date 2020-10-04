@@ -23,6 +23,7 @@ def generate(length):
 class Antibody:
     def __init__(self, n_variables, x_range, id=0):
         self.__id = id
+        self.__n_variables = n_variables
         self.__affinity = 0
         self.__x_range = x_range
         self.__x_bin = np.array([generate(22) for i in range(n_variables)])
@@ -31,11 +32,11 @@ class Antibody:
         x_dec = []
         for i in range(len(self.__x_bin)):
             x_dec.append(decode(self.__x_bin[i], self.__x_range[i]))
-        return x_dec
+        return np.array(x_dec).reshape((self.__n_variables ,1))
 
     def compute_affinity(self, f):
         x_dec = self.get_coordinates()
-        self.__affinity = f(np.array(x_dec))
+        self.__affinity = f(x_dec)
 
     def mutate(self, mutation_probability):
         mask = [np.random.choice([True, False], size=self.__x_bin.shape[1],

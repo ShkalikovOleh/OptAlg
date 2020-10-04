@@ -29,9 +29,12 @@ class OptimizerWithHistory(Optimizer):
         self._history = []
 
     def get_last_history(self):
-        arr = np.array(self._history)
+        arr = np.array(self._history)[..., 0]
         if arr.size > 0:
-            return arr[..., 0].T
+            if arr.ndim <= 2:
+                return arr.T
+            else:
+                return arr
         else:
             return arr
 
