@@ -61,17 +61,11 @@ class Antibody:
     def x_bin(self, x_bin):
         self.__x_bin = x_bin
 
-    @affinity.setter
-    def affinity(self, aff):
-        self.__affinity = aff
-
 
 class ClonAlg(OptimizerWithHistory):
     def __init__(self, n_variables, x_range, population_size=10, n_generations=30, clone_multiplier=5,
                  max_mutation_rate=0.3, to_replace=2):
         super().__init__()
-        self._population = []
-        self._temp_population = []
         self.clone_multiplier = clone_multiplier
         self.max_mutation_rate = max_mutation_rate
         self.to_replace = to_replace
@@ -87,21 +81,22 @@ class ClonAlg(OptimizerWithHistory):
 
     def _clone(self):
         for ab in self._population:
-            for i in range(self.clone_multiplier):
-                self._temp_population.append(deepcopy(ab))
+            clones = [deepcopy(ab) for _ in range(self.clone_multiplier)]
+            self._temp_population[ab.id] = clones
 
     def _mutate(self):
-        l = self.population_size*self.clone_multiplier
-        for j in range(l):
-            self._temp_population[j].mutate(self.max_mutation_rate * (j + 1) / l)
+        for i, ab in enumerate(self._population):
+            for clone in self._temp_population[ab.id]:
+                clone.mutate(self.max_mutation_rate * (i+1) / self.population_size)
 
     # comparing mutants to their parents and replacing
-    def _insert(self):
+    def _insert(self, f):
         for ab in self._population:
-            for clone in self._temp_population:
-                if ab.id == clone.id and ab.affinity > clone.affinity:
-                    ab.x_bin = clone.x_bin
-                    ab.affinity = clone.affinity
+            clones = self._temp_population[ab.id]
+            min_idx = np.argmin([clone.affinity for clone in clones])
+            if ab.affinity > clones[min_idx].affinity:
+                ab.x_bin = clones[min_idx].x_bin
+                ab.compute_affinity(f)
 
     # replacing d antibodies with low affinity with new generated antibodies
     def _edit(self, f):
@@ -122,11 +117,12 @@ class ClonAlg(OptimizerWithHistory):
 
         g = self.n_generations
         while g > 0:
-            self._temp_population = []
+            self._temp_population = {}
             self._clone()
             self._mutate()
-            self._affinity(self._temp_population, f)
-            self._insert()
+            clones = [clone for clones in self._temp_population.values() for clone in clones]
+            self._affinity(clones, f)
+            self._insert(f)
             self._population = sorted(self._population, key=lambda ab: ab.affinity)
             self._edit(f)
             self._population = sorted(self._population, key=lambda ab: ab.affinity)
