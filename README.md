@@ -22,7 +22,7 @@ from optalg.descent import GradientDescentStepDecrease
 from optalg.stop_criteria import GradientNormCriterion
 
 def f(x):
-  return np.sin(x[0])**2 + np.sin(x[1])**2
+  return x[0]**2 + np.exp(x[1]**2)
 
 gnCriterion = GradientNormCriterion(10**-3)
 optimizer = GradientDescentStepDecrease(np.array([[-3],[4]]), gnCriterion, 1, 0.5)
