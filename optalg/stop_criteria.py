@@ -9,6 +9,9 @@ class StopCriterion(ABC):
     def match(self, f, xk, xprev):
         pass
 
+    def reset(self):
+        pass
+
 
 class IterationNumberCriterion(StopCriterion):
 
@@ -63,8 +66,11 @@ class ArgumentNormCriterion(NormCriterion):
             self.first_iteration = False
             return False
         else:
-            self.first_iteration = self.detect_first_iteration
+            self.reset()
             return True
+
+    def reset(self):
+        self.first_iteration = self.detect_first_iteration
 
 
 class FunctionNormCriterion(NormCriterion):
@@ -81,8 +87,11 @@ class FunctionNormCriterion(NormCriterion):
             self.first_iteration = False
             return False
         else:
-            self.first_iteration = self.detect_first_iteration
+            self.reset()
             return True
+
+    def reset(self):
+        self.first_iteration = self.detect_first_iteration
 
 
 class CompoundCriterion(StopCriterion):
@@ -98,9 +107,15 @@ class OrCriterion(CompoundCriterion):
         super().__init__(criteria_list)
 
     def match(self, f, xk, xprev):
-        match_result = [self._criteria[i].match(f, xk, xprev)
-                        for i in range(len(self._criteria))]
-        return np.logical_or.reduce(match_result)
+        match_result = [criterion.match(f, xk, xprev)
+                        for criterion in self._criteria]
+        res = np.logical_or.reduce(match_result)
+
+        if res:
+            for criterion in self._criteria:
+                criterion.reset()
+
+        return res
 
 
 class AndCriterion(CompoundCriterion):
@@ -109,6 +124,12 @@ class AndCriterion(CompoundCriterion):
         super().__init__(criteria_list)
 
     def match(self, f, xk, xprev):
-        match_result = [self._criteria[i].match(f, xk, xprev)
-                        for i in range(len(self._criteria))]
-        return np.logical_and.reduce(match_result)
+        match_result = [criterion.match(f, xk, xprev)
+                        for criterion in self._criteria]
+        res = np.logical_and.reduce(match_result)
+
+        if res:
+            for criterion in self._criteria:
+                criterion.reset()
+
+        return res
