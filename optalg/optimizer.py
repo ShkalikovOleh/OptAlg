@@ -29,9 +29,19 @@ class OptimizerWithHistory(Optimizer):
         self._history = []
 
     def get_last_history(self):
-        arr = np.array(self._history)
+        """
+        Returns history by steps(with start point(s))
+        If each step defines by one point, return matrix (n x m)-
+        where n - variables count, m - steps count + 1
+        Otherwise returns 'tensor' (m x l x n) where l - points count of each step
+        """
+
+        arr = np.array(self._history)[..., 0]
         if arr.size > 0:
-            return arr[..., 0].T
+            if arr.ndim <= 2:
+                return arr.T
+            else:
+                return arr
         else:
             return arr
 
