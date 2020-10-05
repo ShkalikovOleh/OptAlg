@@ -18,6 +18,14 @@ class ConjugateGradientsDescent(FastestDescentBase):
             reset_iteration_number = 10000
         self.__reset_iteration_number = reset_iteration_number
 
+    @property
+    def reset_iteration(self):
+        return self.__reset_iteration_number
+
+    @reset_iteration.setter
+    def reset_iteration(self, value):
+        self.__reset_iteration_number = value
+
     @abstractmethod
     def _b_step(self, gradk, gradprev, sprev):
         pass
