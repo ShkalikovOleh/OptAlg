@@ -61,6 +61,10 @@ class Antibody:
     def x_bin(self, x_bin):
         self.__x_bin = x_bin
 
+    @affinity.setter
+    def affinity(self, aff):
+        self.__affinity = aff
+
 
 class ClonAlg(OptimizerWithHistory):
     def __init__(self, n_variables, x_range, population_size=10, n_generations=30, clone_multiplier=5,
@@ -97,11 +101,13 @@ class ClonAlg(OptimizerWithHistory):
             for clone in self._temp_population:
                 if ab.id == clone.id and ab.affinity > clone.affinity:
                     ab.x_bin = clone.x_bin
+                    ab.affinity = clone.affinity
 
     # replacing d antibodies with low affinity with new generated antibodies
-    def _edit(self):
+    def _edit(self, f):
         for i in range(self.to_replace):
             self._population[-(i+1)] = Antibody(self.n_variables, self.x_range, id=self._population[-(i+1)].id)
+            self._population[-(i+1)].compute_affinity(f)
 
     @property
     def history(self):
@@ -122,8 +128,7 @@ class ClonAlg(OptimizerWithHistory):
             self._affinity(self._temp_population, f)
             self._insert()
             self._population = sorted(self._population, key=lambda ab: ab.affinity)
-            self._edit()
-            self._affinity(self._population, f)
+            self._edit(f)
             self._population = sorted(self._population, key=lambda ab: ab.affinity)
             self._history.append([ab.get_coordinates() for ab in self._population])
             g -= 1
