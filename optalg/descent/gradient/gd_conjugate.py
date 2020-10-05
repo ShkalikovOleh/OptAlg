@@ -12,8 +12,10 @@ class ConjugateGradientsDescent(FastestDescentBase):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, x0, stop_criterion, step_optimizer, reset_iteration_number):
+    def __init__(self, x0, stop_criterion, step_optimizer, reset_iteration_number=None):
         super().__init__(x0, stop_criterion, step_optimizer)
+        if reset_iteration_number is None:
+            reset_iteration_number = 10000
         self.__reset_iteration_number = reset_iteration_number
 
     @abstractmethod
