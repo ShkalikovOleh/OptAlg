@@ -21,3 +21,9 @@ Avaliable variations:
   - Polak–Ribiere
   - Hestenes-Stiefel
   - Dai–Yuan
+
+
+## Immune
+Artificial immune system
+
+- [ClonAlg](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/immune/clonalg.py) - clonal selection algorithm
