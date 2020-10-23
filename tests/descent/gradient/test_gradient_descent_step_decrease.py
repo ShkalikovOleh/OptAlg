@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from optalg.gradient import GradientDescentStepDecrease
+from optalg.descent import GradientDescentStepDecrease
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
-from ..inrange_assertion import InRangeAssertion
+from ...inrange_assertion import InRangeAssertion
 
 
 class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
@@ -15,7 +15,7 @@ class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
 
-        opt = GradientDescentStepDecrease(np.array([-3]), 1, 0.5, gnCriterion)
+        opt = GradientDescentStepDecrease(np.array([-3]), gnCriterion, 1, 0.5)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, 0.2, 10**-3)
@@ -24,7 +24,7 @@ class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
         iteration_count = 10
         nCriterion = IterationNumberCriterion(iteration_count)
 
-        opt = GradientDescentStepDecrease(np.array([-3]), 1, 0.5, nCriterion)
+        opt = GradientDescentStepDecrease(np.array([-3]), nCriterion, 1, 0.5)
         x_opt = opt.optimize(self.f)
 
         self.assertEqual(iteration_count, opt.get_last_history().shape[0] - 1)

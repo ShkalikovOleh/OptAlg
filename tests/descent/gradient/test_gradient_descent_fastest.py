@@ -1,10 +1,10 @@
 import unittest
 import numpy as np
 from optalg.iterative import SimpleSearch
-from optalg.gradient import GradientDescentFastest
+from optalg.descent import GradientDescentFastest
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
-from ..inrange_assertion import InRangeAssertion
+from ...inrange_assertion import InRangeAssertion
 
 
 class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):

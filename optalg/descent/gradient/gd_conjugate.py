@@ -1,10 +1,10 @@
 import numpy as np
 from autograd import elementwise_grad as egrad
 from abc import abstractmethod
-from .gradient_descent import GradientDescentOptimizer
+from ..descent_base import FastestDescentBase
 
 
-class ConjugateGradientsDescent(GradientDescentOptimizer):
+class ConjugateGradientsDescent(FastestDescentBase):
     """
     Method of conjugate gradients
 
@@ -12,44 +12,39 @@ class ConjugateGradientsDescent(GradientDescentOptimizer):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, x0, stop_criteria, step_optimizer, reset_iteration_number):
-        super().__init__(x0, stop_criteria)
-        self.__step_optimizer = step_optimizer
+    def __init__(self, x0, stop_criterion, step_optimizer, reset_iteration_number=None):
+        super().__init__(x0, stop_criterion, step_optimizer)
+        if reset_iteration_number is None:
+            reset_iteration_number = 10000
         self.__reset_iteration_number = reset_iteration_number
+
+    @property
+    def reset_iteration(self):
+        return self.__reset_iteration_number
+
+    @reset_iteration.setter
+    def reset_iteration(self, value):
+        self.__reset_iteration_number = value
 
     @abstractmethod
     def _b_step(self, gradk, gradprev, sprev):
         pass
 
+    def _get_pk(self, f, xk, pprev):
+        grad_value = self._grad(xk)
+
+        self._iteration_number += 1
+        if self.__reset_iteration_number <= self._iteration_number:
+            self._iteration_number = 0
+            return grad_value
+        else:
+            pre_grad_value = self._grad(self._get_prelast())
+            return grad_value + self._b_step(grad_value, pre_grad_value, pprev) * pprev
+
     def optimize(self, f):
-        grad = egrad(f)
-
-        xk = self._x0
-        pk = np.zeros_like(xk)
-        self._history = [xk, xk]
-
-        iteration = 0
-        while not self._stop_criteria.match(f, xk, self._history[-2]):
-            grad_value = grad(xk)
-            iteration += 1
-
-            b = self._b_step(grad_value, grad(self._history[-2]), pk)
-
-            if (self.__reset_iteration_number == iteration):  # reset pk for method convergence
-                pk = 0
-                iteration = 0
-
-            pk = grad_value + b * pk
-
-            a = self.__step_optimizer.optimize(
-                lambda a: f(xk - a * pk))
-
-            xk = xk - a * pk
-            self._history.append(xk)
-
-        self._history = self._history[1:]
-
-        return xk
+        self._grad = egrad(f)
+        self._iteration_number = 0
+        return super().optimize(f)
 
 
 class FletcherReeves(ConjugateGradientsDescent):
