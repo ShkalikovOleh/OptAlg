@@ -1,13 +1,13 @@
 import unittest
 import numpy as np
-from optalg.iterative import SimpleSearch
-from optalg.descent import GradientDescentFastest
+from optalg.step import StepDivision
+from optalg.descent import GradientDescent
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
 from ...inrange_assertion import InRangeAssertion
 
 
-class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
+class GradientDescentTests(unittest.TestCase, InRangeAssertion):
 
     @staticmethod
     def f(x):
@@ -15,9 +15,9 @@ class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10 ** -3)
-        step_opt = SimpleSearch((10**-3, 1), 50)
+        step_opt = StepDivision(1, 0.5)
 
-        opt = GradientDescentFastest(np.array([-3]), gnCriterion, step_opt)
+        opt = GradientDescent(np.array([-3]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, 0.2, 10**-3)
@@ -25,9 +25,9 @@ class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
     def test_get_history(self):
         iteration_count = 10
         nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = SimpleSearch((10**-3, 1), 50)
+        step_opt = StepDivision(1, 0.5)
 
-        opt = GradientDescentFastest(np.array([-3]), nCriterion, step_opt)
+        opt = GradientDescent(np.array([-3]), nCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
         self.assertEqual(iteration_count, opt.history.shape[0] - 1)

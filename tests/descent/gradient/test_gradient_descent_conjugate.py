@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from optalg.iterative import SimpleSearch
+from optalg.step import GridSearch
 from optalg.descent import HestenesStiefel, FletcherReeves, PolakRibier, DaiYuan
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
@@ -16,7 +16,7 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
     def setUp(self):
         self.__x0 = np.array([[0], [0]])
         self.__gnCriterion = GradientNormCriterion(10**-3)
-        self.__step_opt = SimpleSearch((10 ** -3, 1), 100)
+        self.__step_opt = GridSearch((10 ** -3, 1), 100)
         self.__n = 3
         self.__opt = np.array([[3], [1]])
 
@@ -51,7 +51,7 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
     def test_get_history(self):
         iteration_count = 10
         nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = SimpleSearch((10**-3, 1), 100)
+        step_opt = GridSearch((10**-3, 1), 100)
 
         opt = HestenesStiefel(np.array([[0], [0]]), nCriterion, step_opt, 3)
         x_opt = opt.optimize(self.f)

@@ -1,3 +1,2 @@
-from .gd_step_decrease import GradientDescentStepDecrease
-from .gd_fastest import GradientDescentFastest
+from .gradient_descent import GradientDescent
 from .gd_conjugate import FletcherReeves, HestenesStiefel, PolakRibier, DaiYuan

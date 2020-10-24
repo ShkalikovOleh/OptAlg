@@ -15,8 +15,8 @@ class NewtonBase(DescentOptimizerBase):
     for descent direction calculation.
     """
 
-    def __init__(self, x0, stop_criterion, **kwargs) -> None:
-        super().__init__(x0, stop_criterion)
+    def __init__(self, x0, stop_criterion, step_optimizer) -> None:
+        super().__init__(x0, stop_criterion, step_optimizer)
 
     @abstractmethod
     def _get_inverse_h(self, xk: np.ndarray) -> np.ndarray:

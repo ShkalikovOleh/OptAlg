@@ -1,10 +1,10 @@
 import numpy as np
 from autograd import elementwise_grad as egrad
 from abc import abstractmethod
-from ..descent_base import FastestDescentBase
+from ..descent_base import DescentOptimizerBase
 
 
-class ConjugateGradientsDescent(FastestDescentBase):
+class ConjugateGradientsDescent(DescentOptimizerBase):
     """
     Method of conjugate gradients
 
