@@ -28,22 +28,22 @@ class OptimizerWithHistory(Optimizer):
         super().__init__()
         self._history = []
 
-    def get_last_history(self):
+    @property
+    def history(self):
         """
         Returns history by steps(with start point(s))
-        If each step defines by one point, return matrix (n x m)-
-        where n - variables count, m - steps count + 1
-        Otherwise returns 'tensor' (m x l x n) where l - points count of each step
+        History has shape (m x l x n) where
+        m - steps count + 1,
+        l - points count of each step,
+        n - variables count
         """
 
         arr = np.array(self._history)[..., 0]
-        if arr.size > 0:
-            if arr.ndim <= 2:
-                return arr.T
-            else:
-                return arr
-        else:
-            return arr
+        if arr.ndim == 2:
+            arr = arr.reshape(arr.shape[0], 1, arr.shape[1])
+
+        return arr
+
 
     def append_history(self, xs):
         self._history.append(xs)

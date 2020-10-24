@@ -107,10 +107,6 @@ class ClonAlg(OptimizerWithHistory):
                                                 self.x_range, id=self._population[-(i+1)].id)
             self._population[-(i+1)].compute_affinity(f)
 
-    @property
-    def history(self):
-        return self._history
-
     def optimize(self, f):
         self._population = [Antibody(self.n_variables, self.x_range, id=i)
                             for i in range(self.population_size)]

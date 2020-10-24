@@ -56,4 +56,4 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         opt = HestenesStiefel(np.array([[0], [0]]), nCriterion, step_opt, 3)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.get_last_history().shape[1] - 1)
+        self.assertEqual(iteration_count, opt.history.shape[0] - 1)

@@ -30,4 +30,4 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         opt = Newton(np.array([[-3], [-4]]), nCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.get_last_history().shape[1] - 1)
+        self.assertEqual(iteration_count, opt.history.shape[0] - 1)

@@ -21,6 +21,6 @@ class ClonAlgTests(unittest.TestCase, InRangeAssertion):
                       n_generations=15, population_size=7)
         x_opt = opt.optimize(self.f)
 
-        hist = opt.get_last_history()
+        hist = opt.history
         self.assertEqual(np.linalg.norm(hist[-1, 0, :] - x_opt.reshape(2)), 0)
         self.assertEqual(hist.shape, (16, 7, 2))

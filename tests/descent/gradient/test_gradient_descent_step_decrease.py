@@ -27,4 +27,4 @@ class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
         opt = GradientDescentStepDecrease(np.array([-3]), nCriterion, 1, 0.5)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.get_last_history().shape[0] - 1)
+        self.assertEqual(iteration_count, opt.history.shape[0] - 1)
