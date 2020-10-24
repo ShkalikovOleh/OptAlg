@@ -5,6 +5,8 @@ from .newton_base import NewtonBase
 
 
 class Newton(NewtonBase):
+
+
     def __init__(self, x0, stop_criterion, step_optimizer) -> None:
         super().__init__(x0, stop_criterion, step_optimizer)
 
