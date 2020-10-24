@@ -15,16 +15,16 @@ class GradientDescentStepDecreaseTests(unittest.TestCase, InRangeAssertion):
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
 
-        opt = GradientDescentStepDecrease(np.array([-3]), gnCriterion, 1, 0.5)
+        opt = GradientDescentStepDecrease(np.array([-3.]), gnCriterion, 1, 0.5)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, 0.2, 10**-3)
 
     def test_get_history(self):
-        iteration_count = 10
+        iteration_count = 5
         nCriterion = IterationNumberCriterion(iteration_count)
 
-        opt = GradientDescentStepDecrease(np.array([-3]), nCriterion, 1, 0.5)
+        opt = GradientDescentStepDecrease(np.array([-3.]), nCriterion, 1, 0.5)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.get_last_history().shape[0] - 1)
+        self.assertEqual(iteration_count, opt.history.shape[0] - 1)

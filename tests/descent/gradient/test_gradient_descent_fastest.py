@@ -17,7 +17,7 @@ class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
         gnCriterion = GradientNormCriterion(10 ** -3)
         step_opt = SimpleSearch((10**-3, 1), 50)
 
-        opt = GradientDescentFastest(np.array([-3]), gnCriterion, step_opt)
+        opt = GradientDescentFastest(np.array([-3.]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, 0.2, 10**-3)
@@ -27,7 +27,7 @@ class GradientDescentFastestTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = SimpleSearch((10**-3, 1), 50)
 
-        opt = GradientDescentFastest(np.array([-3]), nCriterion, step_opt)
+        opt = GradientDescentFastest(np.array([-3.]), nCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.get_last_history().shape[0] - 1)
+        self.assertEqual(iteration_count, opt.history.shape[0] - 1)

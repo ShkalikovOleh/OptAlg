@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from autograd import elementwise_grad as egrad
+from jax import grad, vmap
 
 
 class StopCriterion(ABC):
@@ -45,8 +45,12 @@ class GradientNormCriterion(NormCriterion):
         super().__init__(epsilon)
 
     def match(self, f, xk, xprev):
-        grad = egrad(f)
-        if np.linalg.norm(grad(xk)) > self._epsilon:
+        if xk.size == 1:
+            grad_fn = vmap(grad(f))
+        else:
+            grad_fn = grad(f)
+
+        if np.linalg.norm(grad_fn(xk)) > self._epsilon:
             return False
         else:
             return True

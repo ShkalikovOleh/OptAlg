@@ -1,4 +1,4 @@
-from autograd import elementwise_grad as egrad
+from jax import grad, jit, vmap
 from ..descent_base import DescentOptimizerBase
 
 
@@ -11,5 +11,8 @@ class SimpleGradientDescentBase(DescentOptimizerBase):
         return self._grad(xk)
 
     def optimize(self, f):
-        self._grad = egrad(f)
+        if self.x0.size == 1:
+            self._grad = jit(vmap(grad(f)))
+        else:
+            self._grad = jit(grad(f))
         return super().optimize(f)

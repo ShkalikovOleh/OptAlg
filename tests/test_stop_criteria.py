@@ -25,7 +25,7 @@ class GradientNormCriterionMatch(TestCase):
             f, np.array([0.9]), np.array([0.9])))
 
     def test_not_match(self):
-        self.assertFalse(self.Criterion.match(f, np.array([2]), np.array([2])))
+        self.assertFalse(self.Criterion.match(f, np.array([2.]), np.array([2.])))
 
 
 class ArgumentNormCriterionTests(TestCase):

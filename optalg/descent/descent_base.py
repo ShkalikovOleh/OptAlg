@@ -55,7 +55,7 @@ class FastestDescentBase(DescentOptimizerBase):
         self._step_opt = step_opt
 
     def _get_a(self, f, xk, pk):
-        return self._step_opt.optimize(lambda a: f(xk - a * pk))
+        return self._step_opt.optimize(lambda a: f(xk.reshape(-1, 1) - a * pk.reshape(-1, 1)))
 
 
 class StepDecreaseDescentBase(DescentOptimizerBase):

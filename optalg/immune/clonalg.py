@@ -33,7 +33,7 @@ class Antibody:
         x_dec = []
         for i in range(len(self.__x_bin)):
             x_dec.append(decode(self.__x_bin[i], self.__x_range[i]))
-        return np.array(x_dec).reshape((self.__n_variables, 1))
+        return np.array(x_dec)
 
     def compute_affinity(self, f):
         x_dec = self.get_coordinates()
@@ -106,10 +106,6 @@ class ClonAlg(OptimizerWithHistory):
             self._population[-(i+1)] = Antibody(self.n_variables,
                                                 self.x_range, id=self._population[-(i+1)].id)
             self._population[-(i+1)].compute_affinity(f)
-
-    @property
-    def history(self):
-        return self._history
 
     def optimize(self, f):
         self._population = [Antibody(self.n_variables, self.x_range, id=i)

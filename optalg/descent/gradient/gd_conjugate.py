@@ -1,5 +1,5 @@
 import numpy as np
-from autograd import elementwise_grad as egrad
+from jax import jit, grad, vmap
 from abc import abstractmethod
 from ..descent_base import FastestDescentBase
 
@@ -42,7 +42,10 @@ class ConjugateGradientsDescent(FastestDescentBase):
             return grad_value + self._b_step(grad_value, pre_grad_value, pprev) * pprev
 
     def optimize(self, f):
-        self._grad = egrad(f)
+        if self.x0.size == 1:
+            self._grad = jit(vmap(grad(f)))
+        else:
+            self._grad = jit(grad(f))
         self._iteration_number = 0
         return super().optimize(f)
 
