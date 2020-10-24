@@ -1,2 +1,3 @@
 numpy
-autograd>=1.3
+jax
+jaxlib

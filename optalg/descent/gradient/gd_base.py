@@ -1,3 +1,4 @@
+import numpy as np
 from jax import grad, jit, vmap
 from ..descent_base import DescentOptimizerBase
 
@@ -15,4 +16,4 @@ class SimpleGradientDescentBase(DescentOptimizerBase):
             self._grad = jit(vmap(grad(f)))
         else:
             self._grad = jit(grad(f))
-        return super().optimize(f)
+        return np.asarray(super().optimize(f))

@@ -1,4 +1,3 @@
-from autograd import elementwise_grad as egrad
 from ..descent_base import FastestDescentBase
 from .gd_base import SimpleGradientDescentBase
 

@@ -1,5 +1,6 @@
 import numpy as np
 from jax import jit, grad, vmap
+from jax import numpy as jnp
 from abc import abstractmethod
 from ..descent_base import FastestDescentBase
 
@@ -47,15 +48,15 @@ class ConjugateGradientsDescent(FastestDescentBase):
         else:
             self._grad = jit(grad(f))
         self._iteration_number = 0
-        return super().optimize(f)
+        return np.asarray(super().optimize(f))
 
 
 class FletcherReeves(ConjugateGradientsDescent):
 
     def _b_step(self, gradk, gradprev, sprev):
-        numerator = np.linalg.norm(gradk)**2
-        denominator = np.linalg.norm(gradprev)**2
-        if np.linalg.norm(denominator) == 0:
+        numerator = jnp.linalg.norm(gradk)**2
+        denominator = jnp.linalg.norm(gradprev)**2
+        if jnp.linalg.norm(denominator) == 0:
             return 0
         else:
             return numerator / denominator
@@ -65,9 +66,9 @@ class HestenesStiefel(ConjugateGradientsDescent):
 
     def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
-        numerator = np.dot(gradk.T, grad_dif)
-        denominator = -np.dot(sprev.T, grad_dif)
-        if np.linalg.norm(denominator) == 0:
+        numerator = jnp.dot(gradk.T, grad_dif)
+        denominator = -jnp.dot(sprev.T, grad_dif)
+        if jnp.linalg.norm(denominator) == 0:
             return 0
         else:
             return numerator / denominator
@@ -77,9 +78,9 @@ class PolakRibier(ConjugateGradientsDescent):
 
     def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
-        numerator = np.dot(gradk.T, grad_dif)
-        denominator = np.linalg.norm(gradprev)**2
-        if np.linalg.norm(denominator) == 0:
+        numerator = jnp.dot(gradk.T, grad_dif)
+        denominator = jnp.linalg.norm(gradprev)**2
+        if jnp.linalg.norm(denominator) == 0:
             return 0
         else:
             return numerator / denominator
@@ -89,9 +90,9 @@ class DaiYuan(ConjugateGradientsDescent):
 
     def _b_step(self, gradk, gradprev, sprev):
         grad_dif = gradk - gradprev
-        numerator = np.linalg.norm(gradk)**2
-        denominator = -np.dot(sprev.T, grad_dif)
-        if np.linalg.norm(denominator) == 0:
+        numerator = jnp.linalg.norm(gradk)**2
+        denominator = -jnp.dot(sprev.T, grad_dif)
+        if jnp.linalg.norm(denominator) == 0:
             return 0
         else:
             return numerator / denominator

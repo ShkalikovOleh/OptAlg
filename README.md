@@ -12,20 +12,21 @@ optimizer = <algo-name>(params...)
 xmin = optimizer.optimize(f)
 ```
 
-For methods **requiring gradient and hessian calculations, use** `autograd.numpy` instead of `numpy`
-to define objective function.
+For methods **requiring gradient and hessian calculations, use** `jax.numpy` instead of `numpy`
+to define objective function. Also you must use an floating point vector as a starting point.
 For example:
 
 ```python
-import autograd.numpy as np
+import numpy as np
+from jax.numpy import exp
 from optalg.descent import GradientDescentStepDecrease
 from optalg.stop_criteria import GradientNormCriterion
 
 def f(x):
-  return x[0]**2 + np.exp(x[1]**2)
+  return x[0]**2 + exp(x[1]**2)
 
 gnCriterion = GradientNormCriterion(10**-3)
-optimizer = GradientDescentStepDecrease(np.array([[-3],[4]]), gnCriterion, 1, 0.5)
+optimizer = GradientDescentStepDecrease(np.array([-3.,4.]), gnCriterion)
 xmin = optimizer.optimize(f)
 ```
 
