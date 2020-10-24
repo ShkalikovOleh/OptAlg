@@ -18,6 +18,7 @@ For example:
 
 ```python
 import autograd.numpy as np
+from optalg.step import StepDivision
 from optalg.descent import GradientDescent
 from optalg.stop_criteria import GradientNormCriterion
 
