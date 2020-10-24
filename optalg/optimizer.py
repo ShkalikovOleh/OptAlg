@@ -44,10 +44,6 @@ class OptimizerWithHistory(Optimizer):
 
         return arr
 
-
-    def append_history(self, xs):
-        self._history.append(xs)
-
     def history_reset(self):
         self._history = []
 
