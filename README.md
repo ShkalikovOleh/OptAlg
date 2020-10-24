@@ -58,9 +58,9 @@ Second-order descent algorithms
 On each step descent direction multiplies by step size.
 Avaliable descent's *step size* calculation methods:
 
-- [SimpleSearch](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/iterative/simple_search.py) - uniform selection of n values from the interval.
+- [SimpleSearch](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/grid_search.py) - uniform selection of n values from the interval.
 
-- [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/iterative/fibonacci.py) - 1-dimensional optimisation for **unimodal** functions(in our case argument is step size). Consequently converges search region until diameter < epsilon; x_min is center of resulting region.
+- [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/fibonacci.py) - 1-dimensional optimisation for **unimodal** functions(in our case argument is step size). Consequently converges search region until diameter < epsilon; x_min is center of resulting region.
 
 
 ### Immune
