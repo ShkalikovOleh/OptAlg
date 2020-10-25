@@ -38,7 +38,11 @@ class OptimizerWithHistory(Optimizer):
         n - variables count
         """
 
-        arr = np.array(self._history)[..., 0]
+
+        arr = np.array(self._history)
+        if arr.shape[-1] == 1:
+            arr = arr[..., 0]
+
         if arr.ndim == 2:
             arr = arr.reshape(arr.shape[0], 1, arr.shape[1])
 

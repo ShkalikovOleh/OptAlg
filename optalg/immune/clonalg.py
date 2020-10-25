@@ -33,7 +33,7 @@ class Antibody:
         x_dec = []
         for i in range(len(self.__x_bin)):
             x_dec.append(decode(self.__x_bin[i], self.__x_range[i]))
-        return np.array(x_dec).reshape((self.__n_variables, 1))
+        return np.array(x_dec)
 
     def compute_affinity(self, f):
         x_dec = self.get_coordinates()

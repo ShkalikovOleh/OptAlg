@@ -14,11 +14,11 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         return x[0]**2 + 2*x[1]**2 + x[0]*x[1] - 7*x[0] - 7*x[1]
 
     def setUp(self):
-        self.__x0 = np.array([[0], [0]])
+        self.__x0 = np.array([0, 0])
         self.__gnCriterion = GradientNormCriterion(10**-3)
         self.__step_opt = GridSearch((10 ** -3, 1), 100)
         self.__n = 3
-        self.__opt = np.array([[3], [1]])
+        self.__opt = np.array([3, 1])
 
     def test_fletcher_reeves(self):
         opt = FletcherReeves(self.__x0, self.__gnCriterion,
@@ -53,7 +53,7 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 1), 100)
 
-        opt = HestenesStiefel(np.array([[0], [0]]), nCriterion, step_opt, 3)
+        opt = HestenesStiefel(np.array([0, 0]), nCriterion, step_opt, 3)
         x_opt = opt.optimize(self.f)
 
         self.assertEqual(iteration_count, opt.history.shape[0] - 1)

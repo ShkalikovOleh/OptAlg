@@ -8,9 +8,9 @@ class DescentOptimizerBase(OptimizerWithHistory):
     Base class for method based descent to minimum
     """
 
-    def __init__(self, x0, stop_criterion, step_optimizer):
+    def __init__(self, x0: np.ndarray, stop_criterion, step_optimizer):
         super().__init__()
-        self._x0 = x0
+        self._x0 = x0.reshape(-1, 1)
         self._stop_criterion = stop_criterion
         self._step_optimizer = step_optimizer
         self._phistory = []
@@ -21,15 +21,15 @@ class DescentOptimizerBase(OptimizerWithHistory):
         """
         Get starting point
         """
-        return self._x0
+        return self._x0.reshape(self._x0.shape[0])
 
     @x0.setter
     def x0(self, value):
         """
         Set starting point
         """
-        if value.shape == self._x0.shape:
-            self._x0 = value
+        if value.size == self._x0.size:
+            self._x0 = value.reshape(-1, 1)
 
     @property
     def step_history(self):
@@ -64,4 +64,4 @@ class DescentOptimizerBase(OptimizerWithHistory):
             self._ahistory.append(a)
             self._phistory.append(pk)
 
-        return xk
+        return xk.reshape(xk.shape[0])

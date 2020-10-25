@@ -17,17 +17,20 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         gnCriterion = GradientNormCriterion(10**-3)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = Newton(np.array([[-3.5], [-4]]), gnCriterion, step_opt)
+        opt = Newton(np.array([-3.5, -4]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertInRange(x_opt, np.array([[3],[1]]), 10**-3)
+        self.assertInRange(x_opt, np.array([3,1]), 10**-3)
 
     def test_get_history(self):
         iteration_count = 10
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = Newton(np.array([[-3], [-4]]), nCriterion, step_opt)
+        opt = Newton(np.array([-3, -4]), nCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.history.shape[0] - 1)
+        hist = opt.history
+        self.assertEqual(iteration_count, hist.shape[0] - 1)
+        self.assertEqual(1, hist.shape[1])
+        self.assertEqual(2, hist.shape[2])
