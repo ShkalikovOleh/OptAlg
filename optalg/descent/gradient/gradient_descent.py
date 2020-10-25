@@ -7,7 +7,7 @@ class GradientDescent(DescentOptimizerBase):
     def __init__(self, x0, stop_criterion, step_optimizer):
         super().__init__(x0, stop_criterion, step_optimizer)
 
-    def _get_pk(self, f, xk, pprev):
+    def _get_pk(self, f, xk):
         return self._grad(xk)
 
     def optimize(self, f):

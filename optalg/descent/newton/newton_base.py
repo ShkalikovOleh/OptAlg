@@ -22,7 +22,7 @@ class NewtonBase(DescentOptimizerBase):
     def _get_inverse_h(self, xk: np.ndarray) -> np.ndarray:
         pass
 
-    def _get_pk(self, f: Callable, xk: np.ndarray, pprev: np.ndarray) -> np.ndarray:
+    def _get_pk(self, f: Callable, xk: np.ndarray) -> np.ndarray:
         grad = self._grad(xk)
         hinv = self._get_inverse_h(xk)
         return np.dot(hinv, grad)

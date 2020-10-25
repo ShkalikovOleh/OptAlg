@@ -40,7 +40,7 @@ class DescentOptimizerBase(OptimizerWithHistory):
         return np.array(self._phistory)[..., 0]
 
     @abstractmethod
-    def _get_pk(self, f, xk, pprev):
+    def _get_pk(self, f, xk):
         """
         Get descent direction
         """
@@ -56,7 +56,7 @@ class DescentOptimizerBase(OptimizerWithHistory):
         self._phistory = []
 
         while not self._stop_criterion.match(f, xk, self._get_prelast()):
-            pk = self._get_pk(f, xk, pk)
+            pk = self._get_pk(f, xk)
             a = self._step_optimizer.optimize(f, xk, pk)
             xk = xk - a * pk
 

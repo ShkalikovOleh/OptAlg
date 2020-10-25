@@ -30,20 +30,26 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
     def _b_step(self, gradk, gradprev, sprev):
         pass
 
-    def _get_pk(self, f, xk, pprev):
+    def _get_pk(self, f, xk):
         grad_value = self._grad(xk)
+        pk = None
 
         self._iteration_number += 1
-        if self.__reset_iteration_number <= self._iteration_number:
+        if self.__reset_iteration_number <= self._iteration_number or len(self._phistory) == 0:
             self._iteration_number = 0
-            return grad_value
+            pk = grad_value
         else:
-            pre_grad_value = self._grad(self._get_prelast())
-            return grad_value + self._b_step(grad_value, pre_grad_value, pprev) * pprev
+            pprev = self._phistory[-1]
+            pk = grad_value + self._b_step(grad_value, self._pgrad, pprev) * pprev
+
+        self._pgrad = grad_value
+
+        return pk
 
     def optimize(self, f):
         self._grad = egrad(f)
         self._iteration_number = 0
+        self._pgrad = np.zeros_like(self._x0)
         return super().optimize(f)
 
 
