@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from optalg.descent import Newton
-from optalg.step import GridSearch
+from optalg.step import GridSearch, FixedStep
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
 from ...inrange_assertion import InRangeAssertion
@@ -15,7 +15,7 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = GridSearch((10**-3, 5), 100)
+        step_opt = FixedStep(0.2)
 
         opt = Newton(np.array([-3.5, -4]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
