@@ -24,7 +24,7 @@ class NewtonBase(DescentOptimizerBase):
         hinv = self._get_inverse_h(xk)
         self._pgrad = grad  # caching for quasi newton
         self._inv_hessian_history.append(hinv)
-        return np.dot(hinv, grad)
+        return hinv @ grad
 
     def optimize(self, f: Callable) -> np.ndarray:
         self._grad = egrad(f)

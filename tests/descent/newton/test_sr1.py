@@ -1,12 +1,12 @@
 import unittest
 import numpy as np
-from optalg.descent import DFP
+from optalg.descent import SR1
 from optalg.step import GridSearch
 from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
 from ...inrange_assertion import InRangeAssertion
 
 
-class DFPTests(unittest.TestCase, InRangeAssertion):
+class SR1Tests(unittest.TestCase, InRangeAssertion):
 
     @staticmethod
     def f(x):
@@ -14,9 +14,9 @@ class DFPTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = GridSearch((10**-3, 10), 100)
+        step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = DFP(np.array([-1, -2]), gnCriterion, step_opt)
+        opt = SR1(np.array([-1, -2]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
         self.assertInRange(x_opt, np.array([1, 1]), 10**-3)
@@ -26,7 +26,7 @@ class DFPTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = DFP(np.array([-3, -4]), nCriterion, step_opt)
+        opt = SR1(np.array([-3, -4]), nCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
         hist = opt.history

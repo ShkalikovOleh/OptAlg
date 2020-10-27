@@ -1,8 +1,9 @@
+from optalg import step
 import numpy as np
 from .newton_base import NewtonBase
 
 
-class DFP(NewtonBase):
+class SR1(NewtonBase):
 
     def __init__(self, x0, stop_ctiterion, step_optimizer) -> None:
         super().__init__(x0, stop_ctiterion, step_optimizer)
@@ -15,11 +16,8 @@ class DFP(NewtonBase):
         pk = xk - self._history[-2]
         hk = self._phinv
 
-        ppT = np.outer(pk, pk)
-        yyT = np.outer(gk, gk)
-        pTy = np.outer(pk, gk)
+        t = pk - hk @ gk
+        numerator = np.outer(t, t)
+        denominator = gk.T @ t
 
-        a = ppT / pTy
-        b = hk @ yyT @ hk / (gk.T @ hk @ gk)
-
-        return hk + a - b
+        return hk + numerator / denominator

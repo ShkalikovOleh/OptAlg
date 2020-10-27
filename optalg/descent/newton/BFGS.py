@@ -14,7 +14,7 @@ class BFGS(NewtonBase):
             return I
 
         yk = self._grad(xk) - self._pgrad
-        pk = self._ahistory[-1] * self._phistory[-1]
+        pk = xk - self._history[-2]
         hk = self._phinv
 
         yTp = np.dot(yk.T, pk)
