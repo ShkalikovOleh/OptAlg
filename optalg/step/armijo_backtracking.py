@@ -15,7 +15,7 @@ class ArmijoBacktracking(StepOptimizer):
         m = - self.__c * np.dot(pk.T, egrad(f)(xk))
         ak = self.__a
 
-        while(f(xk - ak * pk) - f(xk) > ak*m):
+        while f(xk - ak * pk) - f(xk) > ak*m:
             ak = ak * self.__b
 
         return ak

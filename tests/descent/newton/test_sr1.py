@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from optalg.descent import SR1
-from optalg.step import GridSearch
+from optalg.step import BisectionWolfe, GridSearch
 from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
 from ...inrange_assertion import InRangeAssertion
 
@@ -14,7 +14,7 @@ class SR1Tests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = GridSearch((10**-3, 5), 100)
+        step_opt = BisectionWolfe()
 
         opt = SR1(np.array([-1, -2]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
