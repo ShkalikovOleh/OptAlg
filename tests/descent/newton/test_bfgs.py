@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from optalg.descent import BFGS
-from optalg.step import GridSearch
+from optalg.step import ArmijoBacktracking, GridSearch
 from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
 from ...inrange_assertion import InRangeAssertion
 
@@ -14,7 +14,7 @@ class BFGSTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = GridSearch((10**-3, 5), 100)
+        step_opt = ArmijoBacktracking(1, 0.5)
 
         opt = BFGS(np.array([-1, -2]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)

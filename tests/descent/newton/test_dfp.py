@@ -19,7 +19,7 @@ class DFPTests(unittest.TestCase, InRangeAssertion):
         opt = DFP(np.array([-1, -2]), gnCriterion, step_opt)
         x_opt = opt.optimize(self.f)
 
-        self.assertInRange(x_opt, np.array([1, 1]), 10**-3)
+        self.assertInRange(x_opt, np.array([1, 1]), 10**-2)
 
     def test_get_history(self):
         iteration_count = 10

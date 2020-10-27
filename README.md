@@ -19,7 +19,7 @@ For example:
 ```python
 import numpy as np
 from autograd.numpy import sin
-from optalg.step import StepDivision
+from optalg.step import ArmijoBacktracking
 from optalg.descent import GradientDescent
 from optalg.stop_criteria import GradientNormCriterion
 
@@ -29,7 +29,7 @@ def f(x):
 
 
 gnCriterion = GradientNormCriterion(10**-3)
-step_opt = StepDivision(1, 0.5)
+step_opt = ArmijoBacktracking(1, 0.5)
 optimizer = GradientDescent(np.array([-3, 1]), gnCriterion, step_opt)
 
 res = optimizer.optimize(f)
@@ -46,7 +46,7 @@ Avaliable descent's *step size* calculation methods:
 
 - [GridSearch](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/grid_search.py) - uniform selection of n values from the interval.
 
-- [StepDivision](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/step_division.py) - step dividing if the function value at the new point is greater than the function value at the previous point.
+- [ArmijoBacktracking](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/step_division.py) - step dividing if the function value at the new point is greater than the function value at the previous point.
 
 - [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/fibonacci.py) - 1-dimensional optimisation for **unimodal** functions(in our case argument is step size). Consequently converges search region until diameter < epsilon; x_min is center of resulting region.
 
