@@ -1,9 +1,9 @@
 from abc import abstractmethod
 import numpy as np
-from ..optimizer import OptimizerWithHistory
+from ..optimizer import OptimizeResult, Optimizer
 
 
-class DescentOptimizerBase(OptimizerWithHistory):
+class DescentOptimizerBase(Optimizer):
     """
     Base class for method based descent to minimum
     """
@@ -31,14 +31,6 @@ class DescentOptimizerBase(OptimizerWithHistory):
         if value.size == self._x0.size:
             self._x0 = value.reshape(-1, 1)
 
-    @property
-    def step_history(self):
-        return np.array(self._ahistory)
-
-    @property
-    def direction_history(self):
-        return np.array(self._phistory)[..., 0]
-
     @abstractmethod
     def _get_pk(self, f, xk):
         """
@@ -48,20 +40,25 @@ class DescentOptimizerBase(OptimizerWithHistory):
 
     def optimize(self, f):
         xk = self._x0
-        pk = np.zeros_like(xk)
 
-        self.history_reset()
-        self._history.append(xk)
+        self._history = [xk]
         self._ahistory = []
         self._phistory = []
 
-        while not self._stop_criterion.match(f, xk, self._get_prelast()):
+        while not self._stop_criterion.match(f, xk, self._history[-1]):
             pk = self._get_pk(f, xk)
-            a = self._step_optimizer.optimize(f, xk, pk)
+            a = self._step_optimizer.optimize(f, xk, pk).x
             xk = xk - a * pk
 
             self._history.append(xk)
             self._ahistory.append(a)
             self._phistory.append(pk)
 
-        return xk.reshape(xk.shape[0])
+        xhist = np.array(self._history).reshape(
+            (len(self._history), xk.shape[0]))
+        res = OptimizeResult(f=f, x=xk.reshape(-1),
+                             x_history=xhist,
+                             step_history=np.array(self._ahistory),
+                             direction_history=np.array(self._phistory)[..., 0])
+
+        return res

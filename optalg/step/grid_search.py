@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Callable
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class GridSearch(StepOptimizer):
@@ -25,4 +26,4 @@ class GridSearch(StepOptimizer):
     def optimize(self, f: Callable, xk: np.ndarray, pk: np.ndarray):
         a = np.linspace(self.__bounds[0], self.__bounds[1], self.__n)
         y = f(xk - a*pk)
-        return a[np.argmin(y)]
+        return OptimizeResult(x=a[np.argmin(y)])

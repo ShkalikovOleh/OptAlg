@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Callable
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class StepDivision(StepOptimizer):
@@ -24,4 +25,4 @@ class StepDivision(StepOptimizer):
             alphaK = alphaK * self.__b
             xnew = xk - alphaK * pk
 
-        return alphaK
+        return OptimizeResult(x=alphaK)

@@ -12,19 +12,19 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, x0, stop_criterion, step_optimizer, reset_iteration_number=None):
+    def __init__(self, x0, stop_criterion, step_optimizer, renewal_step=None):
         super().__init__(x0, stop_criterion, step_optimizer)
-        if reset_iteration_number is None:
-            reset_iteration_number = 10000
-        self.__reset_iteration_number = reset_iteration_number
+        if renewal_step is None:
+            renewal_step = 10000
+        self.__renewal_step = renewal_step
 
     @property
     def reset_iteration(self):
-        return self.__reset_iteration_number
+        return self.__renewal_step
 
     @reset_iteration.setter
     def reset_iteration(self, value):
-        self.__reset_iteration_number = value
+        self.__renewal_step = value
 
     @abstractmethod
     def _b_step(self, gradk, gradprev, sprev):
@@ -34,14 +34,13 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
         grad_value = self._grad(xk)
         pk = None
 
-        self._iteration_number += 1
-        if self.__reset_iteration_number <= self._iteration_number or len(self._phistory) == 0:
-            self._iteration_number = 0
+        if self._iteration_number % self.__renewal_step == 0:
             pk = grad_value
         else:
             pprev = self._phistory[-1]
             pk = grad_value + self._b_step(grad_value, self._pgrad, pprev) * pprev
 
+        self._iteration_number += 1
         self._pgrad = grad_value
 
         return pk

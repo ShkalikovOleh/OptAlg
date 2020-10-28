@@ -1,6 +1,8 @@
+from optalg.optimizer import OptimizeResult
 import numpy as np
 from typing import Callable
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class Fibonacci(StepOptimizer):
@@ -62,7 +64,7 @@ class Fibonacci(StepOptimizer):
             k = k+1
         X = (a+b)/2
 
-        return X
+        return OptimizeResult(x=X)
 
 
 class ModFibonacci(StepOptimizer):
@@ -123,4 +125,4 @@ class ModFibonacci(StepOptimizer):
             k = k+1
         X = (a+b)/2
 
-        return X
+        return OptimizeResult(x=X)

@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Callable
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class FixedStep(StepOptimizer):
@@ -9,4 +10,4 @@ class FixedStep(StepOptimizer):
         self.__step = step
 
     def optimize(self, f: Callable, xk: np.ndarray, pk: np.ndarray):
-        return self.__step
+        return OptimizeResult(x=self.__step)

@@ -23,11 +23,15 @@ class NewtonBase(DescentOptimizerBase):
         grad = self._grad(xk)
         hinv = self._get_inverse_h(xk)
         self._pgrad = grad  # caching for quasi newton
-        self._phinv = hinv  # caching for quasi newton
+        self._inv_hessian_history.append(hinv)
         return np.dot(hinv, grad)
 
     def optimize(self, f: Callable) -> np.ndarray:
         self._grad = egrad(f)
         self._pgrad = np.zeros_like(self._grad)
-        self._phinv = np.zeros(shape=(self._x0.shape[0], self._x0.shape[0]))
-        return super().optimize(f)
+        self._inv_hessian_history = []
+
+        res = super().optimize(f)
+        res.inv_hessian_history = np.array(self._inv_hessian_history)
+
+        return res

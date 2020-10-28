@@ -18,9 +18,9 @@ class GradientDescentTests(unittest.TestCase, InRangeAssertion):
         step_opt = StepDivision(1, 0.5)
 
         opt = GradientDescent(np.array([-3]), gnCriterion, step_opt)
-        x_opt = opt.optimize(self.f)
+        res = opt.optimize(self.f)
 
-        self.assertInRange(x_opt, 0.2, 10**-3)
+        self.assertInRange(res.x, 0.2, 10**-3)
 
     def test_get_history(self):
         iteration_count = 10
@@ -28,6 +28,8 @@ class GradientDescentTests(unittest.TestCase, InRangeAssertion):
         step_opt = StepDivision(1, 0.5)
 
         opt = GradientDescent(np.array([-3]), nCriterion, step_opt)
-        x_opt = opt.optimize(self.f)
+        res = opt.optimize(self.f)
 
-        self.assertEqual(iteration_count, opt.history.shape[0] - 1)
+        self.assertEqual(iteration_count, res.x_history.shape[0] - 1)
+        self.assertEqual(iteration_count, res.step_history.shape[0])
+        self.assertEqual(iteration_count, res.direction_history.shape[0])

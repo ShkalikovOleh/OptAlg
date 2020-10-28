@@ -1,4 +1,4 @@
-from ..optimizer import OptimizerWithHistory
+from ..optimizer import OptimizeResult, Optimizer
 import numpy as np
 from copy import deepcopy
 
@@ -63,7 +63,7 @@ class Antibody:
         self.__x_bin = x_bin
 
 
-class ClonAlg(OptimizerWithHistory):
+class ClonAlg(Optimizer):
     def __init__(self, n_variables, x_range, population_size=10, n_generations=30, clone_multiplier=5,
                  max_mutation_rate=0.3, to_replace=2):
         super().__init__()
@@ -113,7 +113,7 @@ class ClonAlg(OptimizerWithHistory):
         self._affinity(self._population, f)
         self._population = sorted(self._population, key=lambda ab: ab.affinity)
 
-        self.history_reset()
+        self._history = []
         self._history.append([ab.get_coordinates() for ab in self._population])
 
         g = self.n_generations
@@ -134,4 +134,8 @@ class ClonAlg(OptimizerWithHistory):
                                   for ab in self._population])
             g -= 1
 
-        return self._population[0].get_coordinates()
+        x = self._population[0].get_coordinates()
+        xhist = np.array(self._history)
+        res = OptimizeResult(f=f, x=x, x_history=xhist)
+
+        return res
