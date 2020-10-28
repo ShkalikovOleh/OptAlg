@@ -32,15 +32,8 @@ gnCriterion = GradientNormCriterion(10**-3)
 step_opt = StepDivision(1, 0.5)
 optimizer = GradientDescent(np.array([-3, 1]), gnCriterion, step_opt)
 
-xmin = optimizer.optimize(f)
-```
-
-For methods that inherit the `OptimizerWithHistory`, the history of work by iterations is available:
-```python
-optimizer.history #shape = (m, l, n)
-# m = steps + 1(with initial state)
-# l = points on each iteration
-# n = variables
+res = optimizer.optimize(f)
+res.x #optimum
 ```
 
 ## Available algorithms
