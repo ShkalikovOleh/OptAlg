@@ -1,76 +1,64 @@
 from abc import abstractmethod
 import numpy as np
-from ..optimizer import OptimizerWithHistory
+from ..optimizer import OptimizeResult, Optimizer
 
 
-class DescentOptimizerBase(OptimizerWithHistory):
+class DescentOptimizerBase(Optimizer):
     """
-    Base class for method based on descent to minimum
-    -pk - descent direction
-    a - learning rate(>0)
+    Base class for method based descent to minimum
     """
 
-    def __init__(self, x0, stop_criterion):
+    def __init__(self, x0: np.ndarray, stop_criterion, step_optimizer):
         super().__init__()
-        self._x0 = x0
+        self._x0 = x0.reshape(-1, 1)
         self._stop_criterion = stop_criterion
+        self._step_optimizer = step_optimizer
+        self._phistory = []
+        self._ahistory = []
 
     @property
     def x0(self):
-        return self._x0
+        """
+        Get starting point
+        """
+        return self._x0.reshape(self._x0.shape[0])
 
     @x0.setter
     def x0(self, value):
-        if value.shape == self._x0.shape:
-            self._x0 = value
+        """
+        Set starting point
+        """
+        if value.size == self._x0.size:
+            self._x0 = value.reshape(-1, 1)
 
     @abstractmethod
-    def _get_a(self, f, xk, pk):
-        pass
-
-    @abstractmethod
-    def _get_pk(self, f, xk, pprev):
+    def _get_pk(self, f, xk):
+        """
+        Get descent direction
+        """
         pass
 
     def optimize(self, f):
         xk = self._x0
 
-        self.history_reset()
-        self.append_history(xk)
-        pk = np.zeros_like(xk)
+        self._history = [xk]
+        self._ahistory = []
+        self._phistory = []
 
-        while not self._stop_criterion.match(f, xk, self._get_prelast()):
-            pk = self._get_pk(f, xk, pk)
-            a = self._get_a(f, xk, pk)
+        while not self._stop_criterion.match(f, xk, self._history[-1]):
+            pk = self._get_pk(f, xk)
+            a = self._step_optimizer.optimize(f, xk, pk).x
             xk = xk - a * pk
+
             self._history.append(xk)
+            self._ahistory.append(a)
+            self._phistory.append(pk)
 
-        return xk
+        xhist = np.array(self._history).reshape(
+            (len(self._history), xk.shape[0]))
+        res = OptimizeResult(f=f, x=xk.reshape(-1),
+                             x_history=xhist,
+                             step_history=np.array(self._ahistory),
+                             direction_history=np.array(self._phistory)[..., 0])
 
-
-class FastestDescentBase(DescentOptimizerBase):
-
-    def __init__(self, x0, stop_criterion, step_opt, **kwargs):
-        super().__init__(x0, stop_criterion, **kwargs)
-        self._step_opt = step_opt
-
-    def _get_a(self, f, xk, pk):
-        return self._step_opt.optimize(lambda a: f(xk - a * pk))
-
-
-class StepDecreaseDescentBase(DescentOptimizerBase):
-
-    def __init__(self, x0, stop_criterion, a, b, **kwargs):
-        super().__init__(x0, stop_criterion, **kwargs)
-        self._a = a
-        self._b = b
-
-    def _get_a(self, f, xk, pk):
-        alphaK = self._a
-        xnew = xk - alphaK * pk
-
-        while f(xk) <= f(xnew):
-            alphaK = alphaK * self._b
-            xnew = xk - alphaK * pk
-
-        return alphaK
+        return res
