@@ -14,6 +14,7 @@ class NewtonBase(DescentOptimizerBase):
 
     def __init__(self, x0, stop_criterion, step_optimizer) -> None:
         super().__init__(x0, stop_criterion, step_optimizer)
+        self._inv_hessian_history = []
 
     @abstractmethod
     def _get_inverse_h(self, xk: np.ndarray) -> np.ndarray:
@@ -29,9 +30,9 @@ class NewtonBase(DescentOptimizerBase):
     def optimize(self, f: Callable) -> np.ndarray:
         self._grad = egrad(f)
         self._pgrad = np.zeros_like(self._grad)
-        self._inv_hessian_history = []
 
         res = super().optimize(f)
         res.inv_hessian_history = np.array(self._inv_hessian_history)
+        self._inv_hessian_history.clear()
 
         return res

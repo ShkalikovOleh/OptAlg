@@ -13,7 +13,7 @@ class DFP(NewtonBase):
 
         gk = self._grad(xk) - self._pgrad
         pk = xk - self._history[-2]
-        hk = self._phinv
+        hk = self._inv_hessian_history[-1]
 
         ppT = np.outer(pk, pk)
         yyT = np.outer(gk, gk)

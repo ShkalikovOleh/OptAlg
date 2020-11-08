@@ -2,6 +2,7 @@ import numpy as np
 from typing import Callable
 from autograd import elementwise_grad as egrad
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class ArmijoBacktracking(StepOptimizer):
@@ -18,4 +19,4 @@ class ArmijoBacktracking(StepOptimizer):
         while f(xk - ak * pk) - f(xk) > ak*m:
             ak = ak * self.__b
 
-        return ak
+        return OptimizeResult(x=ak)

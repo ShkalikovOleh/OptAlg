@@ -2,6 +2,7 @@ import numpy as np
 from typing import Callable
 from autograd import elementwise_grad as egrad
 from .step_optimizer import StepOptimizer
+from ..optimizer import OptimizeResult
 
 
 class BisectionWolfe(StepOptimizer):
@@ -35,4 +36,4 @@ class BisectionWolfe(StepOptimizer):
                 else:
                     ak = (d+b)/2
             else:
-                return ak
+                return OptimizeResult(x=ak)
