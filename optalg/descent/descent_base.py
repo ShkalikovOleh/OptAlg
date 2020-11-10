@@ -39,12 +39,19 @@ class DescentOptimizerBase(Optimizer):
         """
         pass
 
+    def __check_stop_criterion(self, f):
+        if len(self._history) > 1:
+            xprev = self._history[-2]
+        else:
+            xprev = self._history[-1]
+        return self._stop_criterion.match(f, self._history[-1], xprev)
+
     def optimize(self, f):
         xk = self._x0
 
         self._history.append(xk)
 
-        while not self._stop_criterion.match(f, xk, self._history[-1]):
+        while not self.__check_stop_criterion(f):
             pk = self._get_pk(f, xk)
             a = self._step_optimizer.optimize(f, xk, pk).x
             xk = xk - a * pk
