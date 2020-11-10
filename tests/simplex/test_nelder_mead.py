@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from optalg.simplex import NelderMead
+from optalg.simplex import NelderMead, generate_initial_simplex
 from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
 from ..inrange_assertion import InRangeAssertion
 
@@ -16,12 +16,8 @@ class NelderMeadTests(unittest.TestCase, InRangeAssertion):
 
         opt = NelderMead(gnCriterion)
 
-        x0 = np.array([-2,-2])
-        x1 = np.array([0,-3])
-        x2 = np.array([-3,0])
-        init_simplex = [x0, x1, x2]
-
-        res = opt.optimize(self.f, init_simplex)
+        x0 = np.array([-2, -2])
+        res = opt.optimize(self.f, generate_initial_simplex(x0, 2))
 
         self.assertInRange(res.x, np.array([3, 1]), 10**-3)
 
@@ -32,10 +28,6 @@ class NelderMeadTests(unittest.TestCase, InRangeAssertion):
         opt = NelderMead(nCriterion)
 
         x0 = np.array([-2, -2])
-        x1 = np.array([0, -3])
-        x2 = np.array([-3, 0])
-        init_simplex = [x0, x1, x2]
-
-        res = opt.optimize(self.f, init_simplex)
+        res = opt.optimize(self.f, generate_initial_simplex(x0, 2))
 
         self.assertEqual(iteration_count, res.x_history.shape[0] - 1)

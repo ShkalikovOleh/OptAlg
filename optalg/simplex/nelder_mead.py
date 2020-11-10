@@ -68,3 +68,13 @@ class NelderMead(Optimizer):
 
         self.__history.clear()
         return res
+
+
+def generate_initial_simplex(x0: np.ndarray, l: float) -> List[np.ndarray]:
+    x0 = x0.astype('float')
+    simplex = [x0]
+    for i in range(x0.shape[0]):
+        xi = np.copy(x0)
+        xi[i] += l
+        simplex.append(xi)
+    return simplex
