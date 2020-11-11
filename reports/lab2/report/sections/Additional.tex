@@ -1,0 +1,92 @@
+\begin{center}
+    \section*{Додатки}
+\end{center}
+
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\lstset{
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    otherkeywords={self},
+    keywordstyle=\color{deepblue},
+    emph={MyClass,__init__, @abstractmethod, @property},
+    emphstyle=\color{deepred},
+    stringstyle=\color{deepgreen},
+    showstringspaces=false
+}
+
+Далі наведено програмний код імплементованих методів
+та усі використані програмні абстракції.
+
+\vspace{0.25cm}
+\noindent \textbf{Абстракція оптимізатора та результата виконання}
+
+\lstinputlisting[language=python]{../../../optalg/optimizer.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Критерії зупинки}
+
+\lstinputlisting[language=python]{../../../optalg/stop_criteria.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Абстракція оптимізатора кроку}
+
+\lstinputlisting[language=python]{../../../optalg/step/step_optimizer.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Метод перебору}
+
+\lstinputlisting[language=python]{../../../optalg/step/grid_search.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Константний крок}
+
+\lstinputlisting[language=python]{../../../optalg/step/fixed.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Ділення шагу до задоволення критеріїв}
+
+\lstinputlisting[language=python]{../../../optalg/step/armijo_backtracking.py}
+\lstinputlisting[language=python]{../../../optalg/step/bisection_wolfe.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Метод Фібоначчі}
+
+\lstinputlisting[language=python]{../../../optalg/step/fibonacci.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Абстракція методів спуску}
+
+\lstinputlisting[language=python]{../../../optalg/descent/descent_base.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Абстракція методів типу Ньютона}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/newton_base.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Метод Ньютона}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/newton.py}
+
+\vspace{0.5cm}
+\noindent \textbf{SR1}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/SR1.py}
+
+\vspace{0.5cm}
+\noindent \textbf{Broyden}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/broyden.py}
+
+\vspace{0.5cm}
+\noindent \textbf{DFP}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/DFP.py}
+
+\vspace{0.5cm}
+\noindent \textbf{BFGS}
+
+\lstinputlisting[language=python]{../../../optalg/descent/newton/BFGS.py}

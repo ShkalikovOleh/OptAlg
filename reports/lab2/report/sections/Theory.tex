@@ -1,0 +1,70 @@
+\begin{center}
+    \section*{Теоретична частина}
+\end{center}
+\SetKwInOut{Parametr}{}
+
+Задача безумовної оптимізації скалярної функції $f(x)$
+полягає у тому, щоб знайти такий $x_{min} \in D$
+($ D \subseteq \mathbb{R}^n $ - область визначення $f$), що:
+
+\begin{equation} \label{eq:optimization_task}
+    x_{min} = \argmin\limits_{x \in D} f(x)
+\end{equation}
+
+Не для усіх функцій можливо просто та швидко
+аналітично знайти екстремуми, тому у практичних
+задачах дуже часто використовуються числені методи
+оптимізації. У даній роботі ми розглянемо
+
+\subsection*{Методи спуску}
+
+Для оптимізації скалярної функцій можна
+використовувати методи спуску, що на кожному кроці
+будуть наближати нас до якогось локального мінімуму.
+Їх можна описати наступною процедурої зміни
+аргумента функції($\alpha_k > 0$, $k \in \mathbb{N}$):
+
+\begin{equation} \label{eq:descent}
+    x_{k+1} = x_{k} - \alpha_k p_{k}
+\end{equation}
+За умови, що виконується нерівність:
+\begin{equation} \label{eq:descent_require}
+    f(x_{k+1}) < f(x_k)
+\end{equation}
+
+Ітерації спуску продовжуются доки не виконана умова зупинки.
+Серед умов зупинки можна виділити наступні($\varepsilon > 0,\;
+n \in \mathbb{N}$ - параметри):
+
+\begin{enumerate}
+    \item Значення градієнту: $|\nabla f_k| < \varepsilon$
+    \item Різниця аргументів: $|x_k - x_{k-1}| < \varepsilon$
+    \item Різниця значення функції: $|f(x_k) - f(x_{k-1})| < \varepsilon$
+    \item Кількість ітерацій більша або рівна за $n$
+\end{enumerate}
+Де $ \nabla f_{k} = \nabla f(x_{k})$(надалі будемо
+використовувати це позначення).
+
+\subsubsection*{Метод Ньютона}
+
+\subsection*{Квазіньютоновські методи}
+
+\subsection*{Метод Гука-Дживса}
+
+\subsection*{Метод Нелдера-Міда}
+
+\subsection*{Генетичний алгоритм}
+
+\begin{algorithm}[H] \label{alg:newton}
+    \SetAlgoLined
+    \KwIn{$x_0$}
+    \KwResult{$x_{min}$}
+    $x_1 \leftarrow x_0$\;
+    \While{не виконана умова зупинки}
+    {
+        $\alpha_k \leftarrow \argmin\limits_{\alpha > 0} f(x_{k} - \alpha H^{-1}_k \nabla f_{k})$\;
+        $x_{k+1} \leftarrow x_{k} - \alpha_k H^{-1}_k \nabla f_{k}$\;
+    }
+    \KwOut{$x_k$}
+ \caption{Метод Ньютона}
+\end{algorithm}
