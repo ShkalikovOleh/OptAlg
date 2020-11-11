@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from optalg.step import StepDivision
+from optalg.step import ArmijoBacktracking
 from optalg.descent import GradientDescent
 from optalg.stop_criteria import GradientNormCriterion
 from optalg.stop_criteria import IterationNumberCriterion
@@ -15,7 +15,7 @@ class GradientDescentTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         gnCriterion = GradientNormCriterion(10 ** -3)
-        step_opt = StepDivision(1, 0.5)
+        step_opt = ArmijoBacktracking(1, 0.5)
 
         opt = GradientDescent(np.array([-3]), gnCriterion, step_opt)
         res = opt.optimize(self.f)
@@ -25,7 +25,7 @@ class GradientDescentTests(unittest.TestCase, InRangeAssertion):
     def test_get_history(self):
         iteration_count = 10
         nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = StepDivision(1, 0.5)
+        step_opt = ArmijoBacktracking(1, 0.5)
 
         opt = GradientDescent(np.array([-3]), nCriterion, step_opt)
         res = opt.optimize(self.f)

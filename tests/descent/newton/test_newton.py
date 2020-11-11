@@ -2,8 +2,7 @@ import unittest
 import numpy as np
 from optalg.descent import Newton
 from optalg.step import GridSearch, FixedStep
-from optalg.stop_criteria import GradientNormCriterion
-from optalg.stop_criteria import IterationNumberCriterion
+from optalg.stop_criteria import IterationNumberCriterion, ArgumentNormCriterion
 from ...inrange_assertion import InRangeAssertion
 
 
@@ -14,7 +13,7 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         return x[0]**2 + 2*x[1]**2 + x[0]*x[1] - 7*x[0] - 7*x[1]
 
     def test_convergence(self):
-        gnCriterion = GradientNormCriterion(10**-3)
+        gnCriterion = ArgumentNormCriterion(10**-4)
         step_opt = FixedStep(0.2)
 
         opt = Newton(np.array([-3.5, -4]), gnCriterion, step_opt)

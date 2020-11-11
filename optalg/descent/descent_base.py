@@ -13,6 +13,7 @@ class DescentOptimizerBase(Optimizer):
         self._x0 = x0.reshape(-1, 1)
         self._stop_criterion = stop_criterion
         self._step_optimizer = step_optimizer
+        self._history = []
         self._phistory = []
         self._ahistory = []
 
@@ -38,14 +39,19 @@ class DescentOptimizerBase(Optimizer):
         """
         pass
 
+    def __check_stop_criterion(self, f):
+        if len(self._history) > 1:
+            xprev = self._history[-2]
+        else:
+            xprev = self._history[-1]
+        return self._stop_criterion.match(f, self._history[-1], xprev)
+
     def optimize(self, f):
         xk = self._x0
 
-        self._history = [xk]
-        self._ahistory = []
-        self._phistory = []
+        self._history.append(xk)
 
-        while not self._stop_criterion.match(f, xk, self._history[-1]):
+        while not self.__check_stop_criterion(f):
             pk = self._get_pk(f, xk)
             a = self._step_optimizer.optimize(f, xk, pk).x
             xk = xk - a * pk
@@ -56,9 +62,14 @@ class DescentOptimizerBase(Optimizer):
 
         xhist = np.array(self._history).reshape(
             (len(self._history), xk.shape[0]))
+
         res = OptimizeResult(f=f, x=xk.reshape(-1),
                              x_history=xhist,
                              step_history=np.array(self._ahistory),
                              direction_history=np.array(self._phistory)[..., 0])
+
+        self._history.clear()
+        self._ahistory.clear()
+        self._phistory.clear()
 
         return res
