@@ -45,15 +45,19 @@ n \in \mathbb{N}$ - параметри):
 Де $ \nabla f_{k} = \nabla f(x_{k})$(надалі будемо
 використовувати це позначення).
 
-\subsubsection*{Метод Ньютона}
+\subsection*{Метод Ньютона}
 
-\subsection*{Квазіньютоновські методи}
-
-\subsection*{Метод Гука-Дживса}
-
-\subsection*{Метод Нелдера-Міда}
-
-\subsection*{Генетичний алгоритм}
+Метод Ньютона являє собою методом спуску, що використовує
+похідні другого цільової функцій, а саме, напрям спуску
+процедури \ref{eq:descent} має вигляд:
+\begin{equation}
+    p_k = H^{-1}_k \nabla f_k
+\end{equation} \label{eq:newton}
+,де $H_k$ - матриця Гессе функції $f$ у точці $x_k$.
+Такий вибір кроку забезпечує більшу швидкість збіжності у
+порівнянні з методами, що використовують лише похідні першого порядку,
+бо більш враховують властивості цільової функції.
+Отже, маємо алгоритм метода Ньютона.
 
 \begin{algorithm}[H] \label{alg:newton}
     \SetAlgoLined
@@ -66,5 +70,62 @@ n \in \mathbb{N}$ - параметри):
         $x_{k+1} \leftarrow x_{k} - \alpha_k H^{-1}_k \nabla f_{k}$\;
     }
     \KwOut{$x_k$}
- \caption{Метод Ньютона}
+    \caption{Метод Ньютона}
 \end{algorithm}
+
+\subsection*{Квазіньютоновські методи}
+
+Метод Ньютона вимагає позитивну визначенність матриці Гессе
+цільової функції у точці на кожному кроці. Ця вимога значно обмежує
+Кількість функцій, які ми можемо оптимізувати за допомогою
+цього методу. Тому, квазіньютоновські методи використовують
+у процесі своєї роботи не обернений гессіан(як у \ref{eq:newton}),
+а наближенне його значення:
+\begin{equation}
+    p_k = B_k \nabla f_k
+\end{equation}
+Існує багато методів обчислення цього наближення $B_k$.
+Серед них можна виділити наступні
+($y_k = \nabla f_k - \nabla f_{k-1}, \;
+\Delta x_k = x_k - x_{k-1} $):
+\begin{enumerate}
+    \item SR1
+    $$ B_k = B_{k-1} + \frac{(\Delta x_{k} - B_{k-1}y_k)
+    (\Delta x_{k} - B_{k-1}y_k)^{T}}
+    {(\Delta x_{k} - B_{k-1}y_k)^{T}y_k} $$
+    \item Broyden
+    $$ B_k = B_{k-1} + \frac{(\Delta x_{k} - B_{k-1}y_k)
+    \Delta x_{k}^{T}B_{k-1}}
+    {\Delta x_{k}^{T}B_{k-1}y_k} $$
+    \item DFP
+    $$ B_k = B_{k-1} + \frac{\Delta x_{k}\Delta x_{k}^{T}}
+    {\Delta x_{k}^{T}y_k} - \frac{B_{k-1}y_ky_k^{T}B_{k-1}}{y_k^{T}B_{k-1}y_k} $$
+    \item BFGS
+    $$ B_k = \left( I - \frac{\Delta x_{k}y_k^{T}}{y_k^{T}\Delta x_k} \right) B_{k-1}
+    \left( I - \frac{y_k \Delta x_{k}^{T}}{y_k^{T}\Delta x_k} \right) +
+    \frac{\Delta x_{k}\Delta x_{k}^{T}}{y_k^{T}\Delta x_k}
+     $$
+\end{enumerate}
+
+Таким чином усі квазіньютоновські алгоритми можна подати у наступному
+вигляді.
+
+\begin{algorithm}[H] \label{alg:newton}
+    \SetAlgoLined
+    \KwIn{$x_0$}
+    \KwResult{$x_{min}$}
+    $x_1 \leftarrow x_0$\;
+    \While{не виконана умова зупинки}
+    {
+        $\alpha_k \leftarrow \argmin\limits_{\alpha > 0} f(x_{k} - \alpha B_k \nabla f_{k})$\;
+        $x_{k+1} \leftarrow x_{k} - \alpha_k B_k \nabla f_{k}$\;
+    }
+    \KwOut{$x_k$}
+    \caption{Квазіньютоновські методи}
+\end{algorithm}
+
+\subsection*{Метод Гука-Дживса}
+
+\subsection*{Метод Нелдера-Міда}
+
+\subsection*{Генетичний алгоритм}
