@@ -7,13 +7,18 @@ from ..descent_base import DescentOptimizerBase
 
 class HookeJeeves(DescentOptimizerBase):
     def __init__(self, stop_criterion: StopCriterion,
-                 step_optimizer: StepOptimizer, pertubation_vector, gamma) -> None:
+                 step_optimizer: StepOptimizer,
+                 pertubation_vector: np.ndarray,
+                 gamma: float = 0.5,
+                 max_vector_reduction: int = 10) -> None:
 
         assert(gamma < 1 and gamma > 0)
+        assert(max_vector_reduction > 0)
 
         super().__init__(stop_criterion, step_optimizer)
         self.__pertubation_vector = pertubation_vector
         self.__gamma = gamma
+        self.__max_vector_reduction = max_vector_reduction
 
     def _get_pk(self, f: Callable, xk: np.ndarray) -> np.ndarray:
         deltas = np.zeros_like(xk)
@@ -32,5 +37,9 @@ class HookeJeeves(DescentOptimizerBase):
                     deltas[i] = -t
                 elif f(xnew2) < f(xk):
                     deltas[i] = t
+
             j += 1
+            if j == self.__max_vector_reduction:
+                break
+
         return deltas
