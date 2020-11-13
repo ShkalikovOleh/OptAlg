@@ -4,8 +4,8 @@ from .newton_base import NewtonBase
 
 class Broyden(NewtonBase):
 
-    def __init__(self, x0, stop_ctiterion, step_optimizer) -> None:
-        super().__init__(x0, stop_ctiterion, step_optimizer)
+    def __init__(self, stop_ctiterion, step_optimizer) -> None:
+        super().__init__(stop_ctiterion, step_optimizer)
 
     def _get_inverse_h(self, xk: np.ndarray) -> np.ndarray:
         if len(self._phistory) == 0:

@@ -16,8 +16,8 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         gnCriterion = ArgumentNormCriterion(10**-4)
         step_opt = FixedStep(0.2)
 
-        opt = Newton(np.array([-3.5, -4]), gnCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = Newton(gnCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-3.5, -4]))
 
         self.assertInRange(res.x, np.array([3,1]), 10**-3)
 
@@ -26,8 +26,8 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = Newton(np.array([-3, -4]), nCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = Newton(nCriterion, step_opt)
+        res=opt.optimize(self.f, np.array([-1, -2]))
 
         hist = res.x_history
         self.assertEqual(iteration_count, hist.shape[0] - 1)

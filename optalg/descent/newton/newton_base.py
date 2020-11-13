@@ -12,8 +12,8 @@ class NewtonBase(DescentOptimizerBase):
     for descent direction calculation.
     """
 
-    def __init__(self, x0, stop_criterion, step_optimizer) -> None:
-        super().__init__(x0, stop_criterion, step_optimizer)
+    def __init__(self, stop_criterion, step_optimizer) -> None:
+        super().__init__(stop_criterion, step_optimizer)
         self._inv_hessian_history = []
 
     @abstractmethod
@@ -27,11 +27,11 @@ class NewtonBase(DescentOptimizerBase):
         self._inv_hessian_history.append(hinv)
         return hinv @ grad
 
-    def optimize(self, f: Callable) -> np.ndarray:
+    def optimize(self, f: Callable, x0: np.ndarray) -> np.ndarray:
         self._grad = egrad(f)
         self._pgrad = np.zeros_like(self._grad)
 
-        res = super().optimize(f)
+        res = super().optimize(f, x0)
         res.inv_hessian_history = np.array(self._inv_hessian_history)
         self._inv_hessian_history.clear()
 
