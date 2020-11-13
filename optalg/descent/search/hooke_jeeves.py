@@ -6,18 +6,19 @@ from ..descent_base import DescentOptimizerBase
 
 
 class HookeJeeves(DescentOptimizerBase):
-    def __init__(self, x0: np.ndarray, stop_criterion: StopCriterion,
+    def __init__(self, stop_criterion: StopCriterion,
                  step_optimizer: StepOptimizer, pertubation_vector, gamma) -> None:
 
         assert(gamma < 1 and gamma > 0)
 
-        super().__init__(x0, stop_criterion, step_optimizer)
+        super().__init__(stop_criterion, step_optimizer)
         self.__pertubation_vector = pertubation_vector
         self.__gamma = gamma
 
     def _get_pk(self, f: Callable, xk: np.ndarray) -> np.ndarray:
         deltas = np.zeros_like(xk)
         j = 0
+
         while np.linalg.norm(deltas) == 0:
             for i in range(xk.shape[0]):
                 t = self.__gamma**j * self.__pertubation_vector[i]

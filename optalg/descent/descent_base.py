@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Callable
 import numpy as np
 from ..optimizer import OptimizeResult, Optimizer
 
@@ -8,29 +9,14 @@ class DescentOptimizerBase(Optimizer):
     Base class for method based descent to minimum
     """
 
-    def __init__(self, x0: np.ndarray, stop_criterion, step_optimizer):
+    def __init__(self, stop_criterion, step_optimizer):
         super().__init__()
-        self._x0 = x0.reshape(-1, 1)
+
         self._stop_criterion = stop_criterion
         self._step_optimizer = step_optimizer
         self._history = []
         self._phistory = []
         self._ahistory = []
-
-    @property
-    def x0(self):
-        """
-        Get starting point
-        """
-        return self._x0.reshape(self._x0.shape[0])
-
-    @x0.setter
-    def x0(self, value):
-        """
-        Set starting point
-        """
-        if value.size == self._x0.size:
-            self._x0 = value.reshape(-1, 1)
 
     @abstractmethod
     def _get_pk(self, f, xk):
@@ -46,8 +32,8 @@ class DescentOptimizerBase(Optimizer):
             xprev = self._history[-1]
         return self._stop_criterion.match(f, self._history[-1], xprev)
 
-    def optimize(self, f):
-        xk = self._x0
+    def optimize(self, f: Callable, x0: np.ndarray):
+        xk = x0.reshape(-1, 1)
 
         self._history.append(xk)
 

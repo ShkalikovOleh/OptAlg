@@ -16,8 +16,8 @@ class DFPTests(unittest.TestCase, InRangeAssertion):
         gnCriterion = GradientNormCriterion(10**-3)
         step_opt = GridSearch((10**-3, 10), 100)
 
-        opt = DFP(np.array([-1, -2]), gnCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = DFP(gnCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-1, -2]))
 
         self.assertInRange(res.x, np.array([1, 1]), 10**-2)
 
@@ -26,7 +26,7 @@ class DFPTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = DFP(np.array([-3, -4]), nCriterion, step_opt)
+        opt = DFP(np.array(nCriterion, step_opt)
         res = opt.optimize(self.f)
 
         hist = res.x_history

@@ -21,30 +21,30 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         self.__opt = np.array([3, 1])
 
     def test_fletcher_reeves(self):
-        opt = FletcherReeves(self.__x0, self.__gnCriterion,
+        opt = FletcherReeves(self.__gnCriterion,
                               self.__step_opt, self.__n)
-        res = opt.optimize(self.f)
+        res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_hestenes_stiefel(self):
-        opt = HestenesStiefel(self.__x0, self.__gnCriterion,
+        opt = HestenesStiefel(self.__gnCriterion,
                              self.__step_opt, self.__n)
-        res = opt.optimize(self.f)
+        res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_polak_ribier(self):
-        opt = PolakRibier(self.__x0, self.__gnCriterion,
+        opt = PolakRibier(self.__gnCriterion,
                               self.__step_opt, self.__n)
-        res = opt.optimize(self.f)
+        res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_dai_yuan(self):
-        opt = DaiYuan(self.__x0, self.__gnCriterion,
+        opt = DaiYuan(self.__gnCriterion,
                           self.__step_opt, self.__n)
-        res = opt.optimize(self.f)
+        res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
@@ -53,7 +53,7 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 1), 100)
 
-        opt = HestenesStiefel(np.array([0, 0]), nCriterion, step_opt, 3)
-        res = opt.optimize(self.f)
+        opt = HestenesStiefel(nCriterion, step_opt, 3)
+        res = opt.optimize(self.f, self.__x0)
 
         self.assertEqual(iteration_count, res.x_history.shape[0] - 1)

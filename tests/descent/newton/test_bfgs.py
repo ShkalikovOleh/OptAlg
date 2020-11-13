@@ -16,8 +16,8 @@ class BFGSTests(unittest.TestCase, InRangeAssertion):
         gnCriterion = GradientNormCriterion(10**-3)
         step_opt = ArmijoBacktracking(1, 0.5)
 
-        opt = BFGS(np.array([-1, -2]), gnCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = BFGS(gnCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-1, -2]))
 
         self.assertInRange(res.x, np.array([1, 1]), 10**-3)
 
@@ -26,8 +26,8 @@ class BFGSTests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = BFGS(np.array([-3, -4]), nCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = BFGS(nCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-1, -2]))
 
         hist = res.x_history
         self.assertEqual(iteration_count, hist.shape[0] - 1)
