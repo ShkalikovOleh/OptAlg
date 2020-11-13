@@ -25,7 +25,6 @@
 для наступних функцій:
 
 \begin{figure}[h!]
-    % \hspace{-2cm}
     \begin{subfigure}{0.3 \textwidth}
         \includegraphics[width=1.5\textwidth,scale=3, trim=3.5cm 0 0 0]{assets/rosenbrock.pdf}
         \caption{Розенброка}
@@ -50,6 +49,7 @@
     \exp{\left[\frac{\cos(2 \pi x_1) + \cos(2 \pi x_2)}{2}\right]} + e + 20 $$
 \end{enumerate}
 
+\clearpage
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|}
@@ -71,22 +71,24 @@
     \caption{Мінімуми досліджуваних функцій}
 \end{table}
 
+\subsection*{Метод Гука-Дживса}
 
-\pagebreak
+\subsection*{Метод Нелдера-Міда}
+
 \subsection*{Метод Ньютона}
 
 \begin{figure}[h!]
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/rosenbrock.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/rosenbrock.pdf}
         \caption{Розенброка}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/himmelblau.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/himmelblau.pdf}
         \caption{Хіммельблау}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
         \centering
-        \includegraphics[width=0.5\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/ackley.pdf}
+        \includegraphics[width=0.5\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/ackley.pdf}
         \caption{Еклі}
     \end{subfigure}
     \caption{Результати запуску методу Ньютона на функції}
@@ -97,19 +99,19 @@
 
 \begin{figure}[h!]
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/rosenbrock.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/rosenbrock.pdf}
         \caption{SR1}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/rosenbrock.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/rosenbrock.pdf}
         \caption{Broyden}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/rosenbrock.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/rosenbrock.pdf}
         \caption{DFP}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/rosenbrock.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/rosenbrock.pdf}
         \caption{BFGS}
     \end{subfigure}
     \caption{Результати запуску квазіньютоновських методів на функції Розенброка}
@@ -117,22 +119,22 @@
 
 \begin{figure}[h!]
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/himmelblau.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/himmelblau.pdf}
         \caption{SR1}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/himmelblau.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/himmelblau.pdf}
         \caption{Broyden}
     \end{subfigure}
 \end{figure}
 \begin{figure}
     \ContinuedFloat
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/himmelblau.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/himmelblau.pdf}
         \caption{DFP}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/himmelblau.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/himmelblau.pdf}
         \caption{BFGS}
     \end{subfigure}
     \caption{Результати запуску квазіньютоновських методів на функції Хіммельблау}
@@ -140,34 +142,122 @@
 
 \begin{figure}[h!]
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/ackley.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/SR1/ackley.pdf}
         \caption{SR1}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/ackley.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/ackley.pdf}
         \caption{Broyden}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/ackley.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/ackley.pdf}
         \caption{DFP}
     \end{subfigure}
     \begin{subfigure}{0.5\textwidth}
-        \includegraphics[width=\textwidth, trim=1.4cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/ackley.pdf}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/BFGS/ackley.pdf}
         \caption{BFGS}
     \end{subfigure}
     \caption{Результати запуску квазіньютоновських методів на функції Еклі}
 \end{figure}
 
 \pagebreak
-\subsection*{Метод Гука-Дживса}
-
-\subsection*{Метод Нелдера-Міда}
-
 \subsection*{Генетичний алгоритм}
 
 \pagebreak
 \subsection*{Порівняння досліджуваних методів оптимізації}
+Для порівняння усіх імплементованих у цій роботі методів,
+пободуємо таблиці з результатами запусків алгоритмів з 4
+різних початкових умов.
 
+\subsubsection*{Метод Нелдера-Міда}
+Початковий симплекс для методів Нелдера-Міда ми обирали наступним чином:
+була вибрана початкова точка $x_0$ та параметр $l \in \mathbb{R}$.
+Кожна наступна $i$-та точка симплекса була обчислена шляхом додавання
+до $i$-той координати $x_0$ величини $l$.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Функція} & \textbf{Початковий симплекс} & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
+        \hline
+        \multirow{4}{*}{Розенброка} & (-2,-2) (0, -2) (-2, 0) & & &  \\
+        \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \hline
+        \multirow{4}{*}{Хіммельблау} & (-2,-2) (0, -2) (-2, 0) & & &  \\
+        \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \hline
+        \multirow{4}{*}{Еклі} & (-2,-2) (0, -2) (-2, 0) & & &  \\
+        \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \cline{2-5}
+        & & & &
+        \\ \hline
+    \end{tabular}
+    \caption{Результати запусків методу Нелдера-Міда}
+\end{table}
+
+\subsubsection*{Метод Гука-Дживса}
+
+Наведемо результати запуску алгорима Гука-Дживса
+з різних початкових точок та з різними векторами пошуку.
+Умовою зупинки для усіх варіацій була умова $\Delta x_k < 10^{-4}$.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Функція} & $x_0$ & \textbf{Вектор пошуку} & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
+        \hline
+        \multirow{4}{*}{Розенброка} & & & & &  \\
+        \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \hline
+        \multirow{4}{*}{Хіммельблау} & & & & &  \\
+        \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \hline
+        \multirow{4}{*}{Еклі} & & & & &  \\
+        \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \cline{2-6}
+        & & & & &
+        \\ \hline
+    \end{tabular}
+    \caption{Результати запусків методу Гука-Дживса}
+\end{table}
+
+\subsubsection*{Методи типу Ньютона}
+
+Усі наступні [квазі]ньютоновські методи використовували
+метод перебору для пошуку розміру кроку, та
+комбінований критерій зупинки:
+або $\Delta x_k < 0.5 \cdot 10^{-3}$,
+або $\nabla f_k < 10^{-4}$.
+
+\vspace{-0.21cm}
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|c|c|}
@@ -218,6 +308,7 @@
     \caption{Порівняльна таблиця для функції Розенброка}
 \end{table}
 
+\vspace{-0.8cm}
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|c|c|}
@@ -269,7 +360,8 @@
     \caption{Порівняльна таблиця для функції Хіммельблау}
 \end{table}
 
-\begin{table}[h!]
+\clearpage
+\begin{table}[ht!]
     \centering
     \begin{tabular}{|c|c|c|c|c|}
         \hline
