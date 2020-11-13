@@ -3,10 +3,15 @@ import numpy as np
 from autograd import elementwise_grad as egrad
 
 
+class NonIncompatibleStopCriterionException(Exception):
+    def __str__(self) -> str:
+        return "Stop criterion do not compatible with this optimizer"
+
+
 class StopCriterion(ABC):
 
     @abstractmethod
-    def match(self, f, xk, xprev):
+    def match(self, f, x_history):
         pass
 
     def reset(self):
@@ -15,26 +20,23 @@ class StopCriterion(ABC):
 
 class IterationNumberCriterion(StopCriterion):
 
-    def __init__(self, n):
+    def __init__(self, n: int):
+        assert(n > 0)
         super().__init__()
         self.__n = n
-        self.reset()
 
-    def match(self, f, xk, xprev):
-        self.__current += 1
-        if self.__n < self.__current:
+    def match(self, f, x_history):
+        if self.__n <= len(x_history) - 1:
             self.reset()
             return True
         else:
             return False
 
-    def reset(self):
-        self.__current = 0
-
 
 class NormCriterion(StopCriterion):
 
-    def __init__(self, epsilon):
+    def __init__(self, epsilon: float):
+        assert(epsilon > 0)
         super().__init__()
         self._epsilon = epsilon
 
@@ -44,9 +46,14 @@ class GradientNormCriterion(NormCriterion):
     def __init__(self, epsilon):
         super().__init__(epsilon)
 
-    def match(self, f, xk, xprev):
+    def match(self, f, x_history):
+        if len(x_history) == 0:
+            return False
+        elif x_history[-1].ndim == 1 or x_history[-1].shape[1] != 1 or x_history[-1].ndim > 2:
+            raise NonIncompatibleStopCriterionException()
+
         grad = egrad(f)
-        if np.linalg.norm(grad(xk)) > self._epsilon:
+        if np.linalg.norm(grad(x_history[-1])) > self._epsilon:
             return False
         else:
             return True
@@ -54,44 +61,42 @@ class GradientNormCriterion(NormCriterion):
 
 class ArgumentNormCriterion(NormCriterion):
 
-    def __init__(self, epsilon, detect_first_iteration=True):
+    def __init__(self, epsilon):
         super().__init__(epsilon)
-        self.detect_first_iteration = detect_first_iteration
-        self.first_iteration = detect_first_iteration
 
-    def match(self, f, xk, xprev):
-        if np.linalg.norm(xk - xprev) > self._epsilon:
+    def match(self, f, x_history):
+        if len(x_history) < 2:
             return False
-        elif self.first_iteration:
-            self.first_iteration = False
+        elif isinstance(x_history[-1], np.ndarray):
+            if x_history[-1].ndim > 2:
+                raise NonIncompatibleStopCriterionException()
+            elif x_history[-1].ndim == 2 and x_history[-1].shape[1] != 1:
+                raise NonIncompatibleStopCriterionException()
+
+        if np.linalg.norm(x_history[-1] - x_history[-2]) > self._epsilon:
             return False
         else:
-            self.reset()
             return True
-
-    def reset(self):
-        self.first_iteration = self.detect_first_iteration
 
 
 class FunctionNormCriterion(NormCriterion):
 
-    def __init__(self, epsilon, detect_first_iteration=True):
+    def __init__(self, epsilon):
         super().__init__(epsilon)
-        self.detect_first_iteration = detect_first_iteration
-        self.first_iteration = detect_first_iteration
 
-    def match(self, f, xk, xprev):
-        if np.linalg.norm(f(xk) - f(xprev)) > self._epsilon:
+    def match(self, f, x_history):
+        if len(x_history) < 2:
             return False
-        elif self.first_iteration:
-            self.first_iteration = False
+        elif isinstance(x_history[-1], np.ndarray):
+            if x_history[-1].ndim > 2:
+                raise NonIncompatibleStopCriterionException()
+            elif x_history[-1].ndim == 2 and x_history[-1].shape[1] != 1:
+                raise NonIncompatibleStopCriterionException()
+
+        if np.linalg.norm(f(x_history[-1]) - f(x_history[-2])) > self._epsilon:
             return False
         else:
-            self.reset()
             return True
-
-    def reset(self):
-        self.first_iteration = self.detect_first_iteration
 
 
 class CompoundCriterion(StopCriterion):
@@ -106,8 +111,8 @@ class OrCriterion(CompoundCriterion):
     def __init__(self, criteria_list):
         super().__init__(criteria_list)
 
-    def match(self, f, xk, xprev):
-        match_result = [criterion.match(f, xk, xprev)
+    def match(self, f, x_history):
+        match_result = [criterion.match(f, x_history)
                         for criterion in self._criteria]
         res = np.logical_or.reduce(match_result)
 
@@ -123,8 +128,8 @@ class AndCriterion(CompoundCriterion):
     def __init__(self, criteria_list):
         super().__init__(criteria_list)
 
-    def match(self, f, xk, xprev):
-        match_result = [criterion.match(f, xk, xprev)
+    def match(self, f, x_history):
+        match_result = [criterion.match(f, x_history)
                         for criterion in self._criteria]
         res = np.logical_and.reduce(match_result)
 
