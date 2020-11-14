@@ -14,9 +14,10 @@ class HookeJeevesTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         argCriterion = ArgumentNormCriterion(10**-2)
-        step_opt = GridSearch((0.1, 20), 100)
+        step_opt = FixedStep(2)
 
-        opt = HookeJeeves(argCriterion, step_opt, np.array([0.05, 0.05]), 0.5)
+        p_vec= HookeJeeves.generate_pertubation_vector(2, 0.05)
+        opt = HookeJeeves(argCriterion, step_opt, p_vec, 0.5)
         res = opt.optimize(self.f, np.array([-3.5, -4]))
 
         self.assertInRange(res.x, np.array([3,1]), 10**-2)

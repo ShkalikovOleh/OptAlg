@@ -44,6 +44,7 @@ class DescentOptimizerBase(Optimizer):
 
         res = OptimizeResult(f=f, x=xk.reshape(-1),
                              x_history=xhist,
+                             n_iter = len(self._ahistory),
                              step_history=np.array(self._ahistory),
                              direction_history=np.array(self._phistory)[..., 0])
 
