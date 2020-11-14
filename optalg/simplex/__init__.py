@@ -1,1 +1,1 @@
-from .nelder_mead import *
+from .nelder_mead import NelderMead
