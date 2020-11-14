@@ -7,6 +7,8 @@
 а саме:
 \vspace{0.25cm}
 \begin{enumerate}
+    \item Гука-Дживса
+    \item Нелдера-Міда
     \item Метод Ньютона
     \item Квазіньютоновські методи:
     \begin{enumerate}
@@ -15,8 +17,6 @@
         \item DFP
         \item BFGS
     \end{enumerate}
-    \item Гука-Дживса
-    \item Нелдера-Міда
     \item Генетичний алгоритм
 \end{enumerate}
 
@@ -71,9 +71,44 @@
     \caption{Мінімуми досліджуваних функцій}
 \end{table}
 
+\subsection*{Метод Нелдера-Міда}
+
+\begin{figure}[h!]
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/NelderMead/rosenbrock.pdf}
+        \caption{Розенброка}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/NelderMead/himmelblau.pdf}
+        \caption{Хіммельблау}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/NelderMead/ackley.pdf}
+        \caption{Еклі}
+    \end{subfigure}
+    \caption{Результати запуску методу Нелдера-Міда на функції}
+\end{figure}
+
+\pagebreak
 \subsection*{Метод Гука-Дживса}
 
-\subsection*{Метод Нелдера-Міда}
+\begin{figure}[h!]
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/HookeJeeves/rosenbrock.pdf}
+        \caption{Розенброка}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/HookeJeeves/himmelblau.pdf}
+        \caption{Хіммельблау}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/HookeJeeves/ackley.pdf}
+        \caption{Еклі}
+    \end{subfigure}
+    \caption{Результати запуску методу Гука-Дживса на функції}
+\end{figure}
 
 \subsection*{Метод Ньютона}
 
@@ -86,6 +121,9 @@
         \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/himmelblau.pdf}
         \caption{Хіммельблау}
     \end{subfigure}
+\end{figure}
+\begin{figure}[h!]
+    \ContinuedFloat
     \begin{subfigure}{\textwidth}
         \centering
         \includegraphics[width=0.5\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Newton/ackley.pdf}
@@ -126,9 +164,6 @@
         \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/himmelblau.pdf}
         \caption{Broyden}
     \end{subfigure}
-\end{figure}
-\begin{figure}
-    \ContinuedFloat
     \begin{subfigure}{0.5\textwidth}
         \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/himmelblau.pdf}
         \caption{DFP}
@@ -149,6 +184,9 @@
         \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/Broyden/ackley.pdf}
         \caption{Broyden}
     \end{subfigure}
+\end{figure}
+\begin{figure}
+    \ContinuedFloat
     \begin{subfigure}{0.5\textwidth}
         \includegraphics[width=\textwidth, trim=1cm 0.5cm 1.3cm 1cm, clip]{assets/DFP/ackley.pdf}
         \caption{DFP}
@@ -160,7 +198,7 @@
     \caption{Результати запуску квазіньютоновських методів на функції Еклі}
 \end{figure}
 
-\pagebreak
+\vspace*{10cm}
 \subsection*{Генетичний алгоритм}
 
 \pagebreak
@@ -173,7 +211,9 @@
 Початковий симплекс для методів Нелдера-Міда ми обирали наступним чином:
 була вибрана початкова точка $x_0$ та параметр $l \in \mathbb{R}$.
 Кожна наступна $i$-та точка симплекса була обчислена шляхом додавання
-до $i$-той координати $x_0$ величини $l$.
+до $i$-той координати $x_0$ величини $l$. За критерій зупинки
+було обрано наступне: стандартне відхилення значень функції
+у кожній точці симплекса менше за $10^{-3}$.
 
 \begin{table}[h!]
     \centering
@@ -181,29 +221,11 @@
         \hline
         \textbf{Функція} & \textbf{Початковий симплекс} & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
         \hline
-        \multirow{4}{*}{Розенброка} & (-2,-2) (0, -2) (-2, 0) & & &  \\
-        \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
+        Розенброка & (-4,-4) (-4, -2) (-2, -4) & (1.02, 1.04) & 0.01 & 65
         \\ \hline
-        \multirow{4}{*}{Хіммельблау} & (-2,-2) (0, -2) (-2, 0) & & &  \\
-        \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
+        Хіммельблау & (-1,-1) (-1, 1) (1, -1) & (3,2) & 0 & 25
         \\ \hline
-        \multirow{4}{*}{Еклі} & (-2,-2) (0, -2) (-2, 0) & & &  \\
-        \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
-        \\ \cline{2-5}
-        & & & &
+        Еклі & (-4,-4) (-4, -2) (-2, -4) & (0, 0) & 0 & 26
         \\ \hline
     \end{tabular}
     \caption{Результати запусків методу Нелдера-Міда}
@@ -212,38 +234,39 @@
 \subsubsection*{Метод Гука-Дживса}
 
 Наведемо результати запуску алгорима Гука-Дживса
-з різних початкових точок та з різними векторами пошуку.
-Умовою зупинки для усіх варіацій була умова $\Delta x_k < 10^{-4}$.
+з різних початкових точок.
+Умовою зупинки для усіх варіацій була
+умова $\Delta f(x) < 10^{-3}$.
 
 \begin{table}[h!]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
-        \textbf{Функція} & $x_0$ & \textbf{Вектор пошуку} & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
+        \textbf{Функція} & $x_0$ & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
         \hline
-        \multirow{4}{*}{Розенброка} & & & & &  \\
-        \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
-        \\ \hline
-        \multirow{4}{*}{Хіммельблау} & & & & &  \\
-        \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
-        \\ \hline
-        \multirow{4}{*}{Еклі} & & & & &  \\
-        \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
-        \\ \cline{2-6}
-        & & & & &
+        \multirow{4}{*}{Розенброка} & (-4 , -4) & (0.66,0.42) & 4.31 & 25 \\
+        \cline{2-5}
+        & (-4, 4) & (-2.35,5.52) & 13.7 & 13 \\
+        \cline{2-5}
+        & (4, -4) & (0.71,0.5) & 4.5 & 38 \\
+        \cline{2-5}
+        & (4, 4) & (2.35,5.52) & 13.7 & 13 \\
+        \hline
+        \multirow{4}{*}{Хіммельблау} & (-1 , -1) & (-3.77,-3.29) & 0.0 & 14 \\
+        \cline{2-5}
+        & (-1 , 1) & (-2.8,3.13) & 0.0 & 15 \\
+        \cline{2-5}
+        & (1 , -1) & (3.0,2.0) & 0.0 & 16 \\
+        \cline{2-5}
+        & (1 , 1) & (3.0,2.0) & 0.0 & 13 \\
+        \hline
+        \multirow{4}{*}{Еклі} & (-3.5, 2) & (-2.98,-1.99) & 7.96 & 7 \\
+        \cline{2-5}
+        & (-3.5, 4) & (-2.98,3.98) & 10.12 & 7
+        \\ \cline{2-5}
+        & (2.5, 2) &(1.97,-1.97) & 6.56 & 7
+        \\ \cline{2-5}
+        & (2.5, 4) & (1.99,3.97) & 9.35 & 7
         \\ \hline
     \end{tabular}
     \caption{Результати запусків методу Гука-Дживса}
@@ -367,45 +390,47 @@
         \hline
         \textbf{Алгоритм} & $x_{0}$ & $\approx x_{res}$ & $\approx f(x_{res})$ & \textbf{Кількість ітерацій}  \\
         \hline
-        Ньютона & \multirow{5}{*}{(-3.5, -3.5)} & (-3.77, -3.77) & 12.19 & 2 \\
+        Ньютона & \multirow{5}{*}{(-3.5, 2)} & (-3.5,-2.0) & 10.41 & 1 \\
         \cline{1-1} \cline{3-5}
-        SR1 & & (-1.97, -1.97) & 6.56 & 3 \\
+        SR1 & & (-1.06,-0.89) & 3.95 & 4 \\
         \cline{1-1} \cline{3-5}
-        Broyden & & (-1.97, -1.97) & 6.56 & 3 \\
+        Broyden & & (-0.0,0.95) & 2.58 & 5 \\
         \cline{1-1} \cline{3-5}
-        DFP & & (-1.97, -1.97) & 6.56 & 3 \\
+        DFP & & (0.12,-0.2) & 1.71 & 5 \\
         \cline{1-1} \cline{3-5}
-        BFGS & & (-1.97, -1.97) & 6.56 & 3 \\
+        BFGS & & (0.0,0.0) & 0.0 & 7 \\
         \hline
-        Ньютона & \multirow{5}{*}{(-3.5, 4)} & (-3.77, -3.77) & 12.28 & 2 \\
+        Ньютона & \multirow{5}{*}{(-3.5, 4)} & (-3.55,3.95) & 12.28 & 3 \\
         \cline{1-1} \cline{3-5}
-        SR1 & & (-3.55, 3.95) & 7.27 & 3 \\
+        SR1 & & (-1.81,2.06) & 7.27 & 2 \\
         \cline{1-1} \cline{3-5}
-        Broyden & & (-1.97, 1.97) & 6.56 & 5 \\
+        Broyden & & (-1.97,1.97) & 6.56 & 5 \\
         \cline{1-1} \cline{3-5}
-        DFP & & (-0.11, 2.09) & 5.58 & 5 \\
+        DFP & & (-0.11,2.09) & 5.58 & 5 \\
         \cline{1-1} \cline{3-5}
-        BFGS & & (-1.97, 1.97) & 6.56 & 6 \\
+        BFGS & & (-1.97,1.97) & 6.56 & 6 \\
         \hline
-        Newton & \multirow{5}{*}{(3.5, -3.5)} & (3.77,-3.77) & 12.19 & 2 \\
+        Newton & \multirow{5}{*}{(2.5, -2)} & (2.5,-2.0) & 9.0 & 1 \\
         \cline{1-1} \cline{3-5}
-        SR1 & & (1.97,-1.97) & 6.56 & 3 \\
+        SR1 & & (0.0,-0.0) & 0.0 & 4 \\
         \cline{1-1} \cline{3-5}
-        Broyden & & (1.97,-1.97) & 6.56 & 3 \\
+        Broyden & & (0.0,0.0) & 0.0 & 4 \\
         \cline{1-1} \cline{3-5}
-        DFP & & (1.97,-1.97) & 6.56 & 2 \\
+        DFP & & (0.0,-0.0) & 0.0 & 2 \\
         \cline{1-1} \cline{3-5}
-        BFGS & & (1.97,-1.97) & 6.56 & 3 \\
+        BFGS & & (0.0,-0.0) & 0.0 & 2 \\
         \hline
-        Newton & \multirow{5}{*}{(3.5,4)} & (3.55,3.95) & 12.28 & 3 \\
-        \cline{1-1} \cline{3-5}
-        SR1 & & (1.81,2.06) & 7.27 & 2 \\
-        \cline{1-1} \cline{3-5}
-        Broyden & & (1.97,1.97) & 6.56 & 5 \\
-        \cline{1-1} \cline{3-5}
-        DFP & & (0.12,-0.1) & 1.02 & 5 \\
+        Newton & \multirow{5}{*}{(2.5,4)} & (2.54,3.94) & 11.43 & 3 \\
         \cline{1-1} \cline{3-5}
         BFGS & & (1.97,1.97) & 6.56 & 6 \\
+        \cline{1-1} \cline{3-5}
+        SR1 & & (1.13,1.81) & 6.24 & 2 \\
+        \cline{1-1} \cline{3-5}
+        Broyden & & (0.98,1.96) & 5.38 & 6 \\
+        \cline{1-1} \cline{3-5}
+        DFP & & (1.13,1.81) & 6.24 & 2 \\
+        \cline{1-1} \cline{3-5}
+        BFGS & & (-0.0,0.0) & 0.0 & 13 \\
         \hline
     \end{tabular}
     \caption{Порівняльна таблиця для функції Еклі}
