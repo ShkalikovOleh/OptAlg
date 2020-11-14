@@ -9,7 +9,7 @@ def f(x):
   return <your-function value>(where argument x_i = x[i])
 
 optimizer = <algo-name>(params...)
-res = optimizer.optimize(f) #optimization result
+res = optimizer.optimize(f, [init_state]) #optimization result
 ```
 
 For methods **requiring gradient and hessian calculations, use** `autograd.numpy` instead of `numpy`
@@ -30,13 +30,17 @@ def f(x):
 
 gnCriterion = GradientNormCriterion(10**-3)
 step_opt = ArmijoBacktracking(1, 0.5)
-optimizer = GradientDescent(np.array([-3, 1]), gnCriterion, step_opt)
+optimizer = GradientDescent(gnCriterion, step_opt)
 
-res = optimizer.optimize(f)
+res = optimizer.optimize(f, np.array([-3, 1]))
 res.x #optimum
 ```
 
 ## Available algorithms
+
+### Simplex
+
+- [Nelder-Mead](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/simplex/nelder_mead.py) - simplex reflection, contraction, expansion and shrink to the minimum of the objective function.
 
 ### Descent
 Methods based on descent to the optimum by something direction.
@@ -53,6 +57,13 @@ Avaliable descent's *step size* calculation methods:
 - [BisectionWolfe](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/bisection_wolfe.py) - bisection method that either computes a step size satisfying the weak Wolfe conditions or sends the function values to -inf.
 
 - [Fibonacci](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/step/fibonacci.py) - 1-dimensional optimisation for **unimodal** functions(in our case argument is step size). Consequently converges search region until diameter < epsilon; x_min is center of resulting region.
+
+#### Search
+Methods that does not require differentiability of the objective function.
+For direction calculation uses another search methods.
+
+- [Hooke-Jeeves](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/descent/search/hooke_jeeves.py) - pattern search. Descent direction is the best combination of coordinates of the pertubation vector.
+
 
 #### Gradient
 Methods based on descent to minimum by gradient-like direction.

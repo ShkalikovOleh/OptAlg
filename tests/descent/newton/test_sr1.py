@@ -16,8 +16,8 @@ class SR1Tests(unittest.TestCase, InRangeAssertion):
         gnCriterion = GradientNormCriterion(10**-3)
         step_opt = BisectionWolfe()
 
-        opt = SR1(np.array([-1, -2]), gnCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = SR1(gnCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-1, -2]))
 
         self.assertInRange(res.x, np.array([1, 1]), 10**-3)
 
@@ -26,8 +26,8 @@ class SR1Tests(unittest.TestCase, InRangeAssertion):
         nCriterion = IterationNumberCriterion(iteration_count)
         step_opt = GridSearch((10**-3, 5), 100)
 
-        opt = SR1(np.array([-3, -4]), nCriterion, step_opt)
-        res = opt.optimize(self.f)
+        opt = SR1(nCriterion, step_opt)
+        res = opt.optimize(self.f, np.array([-1, -2]))
 
         hist = res.x_history
         self.assertEqual(iteration_count, hist.shape[0] - 1)

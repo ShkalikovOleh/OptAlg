@@ -1,3 +1,4 @@
+from typing import Callable
 import numpy as np
 from autograd import elementwise_grad as egrad
 from abc import abstractmethod
@@ -12,8 +13,8 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, x0, stop_criterion, step_optimizer, renewal_step=None):
-        super().__init__(x0, stop_criterion, step_optimizer)
+    def __init__(self, stop_criterion, step_optimizer, renewal_step=None):
+        super().__init__(stop_criterion, step_optimizer)
         if renewal_step is None:
             renewal_step = 10000
         self.__renewal_step = renewal_step
@@ -45,11 +46,11 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
 
         return pk
 
-    def optimize(self, f):
+    def optimize(self, f:Callable, x0: np.ndarray):
         self._grad = egrad(f)
         self._iteration_number = 0
-        self._pgrad = np.zeros_like(self._x0)
-        return super().optimize(f)
+        self._pgrad = np.zeros(shape=(x0.shape[0], 1))
+        return super().optimize(f, x0)
 
 
 class FletcherReeves(ConjugateGradientsDescent):
