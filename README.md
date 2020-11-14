@@ -38,6 +38,10 @@ res.x #optimum
 
 ## Available algorithms
 
+### Simplex
+
+- [Nelder-Mead](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/simplex/nelder_mead.py) - simplex reflection, contraction, expansion and shrink to the minimum of the objective function.
+
 ### Descent
 Methods based on descent to the optimum by something direction.
 

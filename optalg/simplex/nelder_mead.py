@@ -56,8 +56,9 @@ class NelderMead(Optimizer):
                 simplex[i+1] = simplex[0] + self.__delta * (x - simplex[0])
             self.__history.append(simplex.copy())
 
+        idx = np.argmin([f(x) for x in simplex])
         res = OptimizeResult(
-            f=f, x=simplex[0],
+            f=f, x=simplex[idx],
             n_iter=len(self.__history) - 1,
             x_history=np.array(self.__history))
 
