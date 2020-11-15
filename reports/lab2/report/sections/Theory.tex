@@ -14,9 +14,137 @@
 Не для усіх функцій можливо просто та швидко
 аналітично знайти екстремуми, тому у практичних
 задачах дуже часто використовуються числені методи
-оптимізації. У даній роботі ми розглянемо
+оптимізації. У даній роботі ми розглянемо методи другого порядку,
+методи Нелдера-Міда, Хука-Дживса та генетичний алгоритм.
 
 \subsection*{Метод Нелдера-Міда}
+
+Розглянемо один з найвідоміших методів нерегулярного симплекса,
+а саме метод Нелдера-Міда. Він полягає у тому, що на кожному кроці
+алгоритма ми певним чином деформуємо сиплекс(многогранник
+$S \in \mathbb{R}^{n}$, де $n$-розмірність задачі).
+Подамо усі можливі деформації ($x_c = \dfrac{\sum\limits_{i=1}^{n} x_i}{n}$):
+\begin{enumerate}
+    \item Reflection($\alpha > 0 \in \mathbb{R}$):
+    $ x_r = x_c + \alpha(x_c - x_{n+1}) $
+    \item Expansion($\gamma > 0 \in \mathbb{R}$):
+    $ x_e = x_c + \gamma (x_r - x_c) $
+    \item Contraction($0 < \rho \leq \frac{1}{2} \in \mathbb{R}$):
+    $ x_{contr} = x_c + \rho (x_r - x_c) $
+    \item Shrink($i \neq 1$, $0 < \sigma  \leq \frac{1}{2} \in \mathbb{R}$): $x_i = x_1 + \sigma(x-i - x_1)$
+\end{enumerate}
+Порядок застосування данних деформацій наведемо на діаграмі нижче:
+
+% \usetikzlibrary{shapes.geometric, arrows}
+% \tikzstyle{startstop} = [rectangle, rounded corners, text centered, draw=black, fill=red!30]
+% \tikzstyle{process} = [rectangle, text centered, draw=black, fill=orange!30]
+% \tikzstyle{decision} = [rectangle, rounded corners, text width = 2.55cm, text centered, draw=black, fill=green!30]
+% \tikzstyle{arrow} = [thick,->,>=stealth]
+
+% \begin{figure}[h!]
+%     \begin{center}
+%         \begin{tikzpicture}[node distance=1.5cm]
+%             \node[startstop] (start) at(-8,-2) {start};
+%             \node[decision] (criterion) at (-5,-2) {Виконується критерій зупинки?};
+
+%             \node[process] (final_sort) at(-5,-4.7) {Sort};
+%             \node[startstop] (stop) at(-5,-6.5) {$x_{min} = x_1$};
+
+%             \node[process] (sort) at (-1, -2) {Sort};
+%             \node[process] (reflection) at (2, -2) {Reflection};
+%             \node[decision] (ref_check) at (5.5, -2) {$f(x_1)\leq f(x_r)$ $f(x_r)<f(x_n)$};
+
+%             \node[process] (contraction) at (5.5, 0.5) {Contraction};
+%             \node[process] (expansion) at (5.5, -4.7) {Expansion};
+
+%             \node[decision] (contr_check) at (2, 0.5) {$f(x_c) < f(x_{n+1})$};
+%             \node[decision] (exp_check) at (2, -4.7) {$f(x_e) < f(x_r)$};
+
+%             \node[process] (shrink) at (-1, 0.5) {Shrink};
+
+%             \draw[arrow] (start)--(criterion);
+
+%             \draw[arrow] (criterion)--node[anchor=east]{так} (final_sort);
+%             \draw[arrow] (final_sort)--(stop);
+
+%             \draw[arrow] (criterion)--node[anchor=south]{ні} (sort);
+%             \draw[arrow] (sort)--(reflection);
+
+%             \draw[arrow] (reflection)--(ref_check);
+%             \draw[arrow] (ref_check)--node[anchor=east]{так} ++(0,-1.5)
+%             --node[anchor=south]{$x_{n+1}=x_r$} ++(-8,0)--(criterion);
+
+%             \draw[arrow] (ref_check)--++(2,0)--
+%             node[anchor=west, yshift=-1.5cm, xshift=-0.3cm, rotate=90]{$f(x_r) < f(x_1)$}
+%             ++(0,-2.7)--(expansion);
+%             \draw[arrow] (ref_check)--++(2,0)--
+%             node[anchor=west, yshift=-1.5cm, xshift=0.3cm, rotate=90]{$f(x_r) \geq f(x_n)$}
+%             ++(0,2.5)--(contraction);
+
+%         \end{tikzpicture}
+%     \end{center}
+%     \caption{Блок-схема метода Нелдера-Міда}
+%     \label{fig:nelder_mead}
+% \end{figure}
+
+Отже, отримаємо алгоритм метода Нелдера-Міда.
+
+\SetKw{Continue}{continue}
+\begin{algorithm}[H] \label{alg:nelder_mead}
+    \SetAlgoLined
+    \KwIn{$ S_n = \{x_1 \dots\, x_{n+1}\}, \alpha, \gamma, \rho, \sigma $}
+    \KwResult{$x_{min}$}
+    \While{не виконана умова зупинки}
+    {
+        sort($S_n$)\;
+        $ x_c \leftarrow \dfrac{\sum\limits_{i=1}^{n} x_i}{n} $ \;
+
+        $ x_r  \leftarrow x_c + \alpha(x_c - x_{n+1}) $ \tcp{Reflection}
+        \If{$f(x_1) \leq f(x_r) < f(x_n)$}
+        {
+            $x_{n+1} \leftarrow x_r$ \;
+            \Continue
+        }
+
+        \If{$f(x_r) < f(x_1)$}
+        {
+            $x_e \leftarrow x_c + \gamma (x_r - x_c)$ \tcp{Expansion}
+            \If{$f(x_e) < f(x_r)$}{
+                $x_{n+1} \leftarrow x_e$ \;
+            }
+            \Else{
+                $x_{n+1} \leftarrow x_r$ \;
+            }
+            \Continue
+        }
+
+        \If{$f(x_r) \geq f(x_n)$}
+        {
+            $x_{contr} \leftarrow x_c + \rho (x_r - x_c)$ \tcp{Contraction}
+            \If{$f(x_{contr}) < f(x_{n+1})$}{
+                $x_{n+1} \leftarrow x_{contr}$ \;
+                \Continue
+            }
+        }
+
+
+        \For{$1 < i \leq n+1$}
+        {
+            $x_i \leftarrow x_1 + \sigma(x-i - x_1)$ \tcp{Shrink}
+        }
+    }
+    sort($S_n$)\;
+    \KwOut{$x_1$}
+    \caption{Метод Нелдера-Міда}
+\end{algorithm}
+
+\vspace*{0.5cm}
+У якості критерія зупинки можна обрати наступні умови:
+\begin{enumerate}
+    \item Кількість ітерації вища за деяке наперед задане $k \in \mathbb{N}$
+    \item Стандартне відхилення значення функції у кожній з точок
+    симплекса менше за деяке $\varepsilon > 0 \in \mathbb{R}$.
+\end{enumerate}
 
 \subsection*{Методи спуску}
 
@@ -47,9 +175,86 @@ n \in \mathbb{N}$ - параметри):
 Де $ \nabla f_{k} = \nabla f(x_{k})$(надалі будемо
 використовувати це позначення).
 
-\subsection*{Метод Гука-Дживса}
+\subsubsection*{Метод Гука-Дживса}
 
-\subsection*{Метод Ньютона}
+Метод Гука-Дживса є методом прямого пошуку, що використовує
+для визначення напряму спуску окрему процедуру вичерпуючого
+пошуку(exploratory-search). А саме, для даної точки $x$ та
+вектору "змін" $b$ ми змінюємо кожну координату за правилом
+(спочатку $x_b = x_k$):
+
+$$ x_{b_i} = x_{k_i} + b_i \;,\text{якщо}
+    \begin{cases}
+        f(x_{b_1}, \dots x_{k_i} + b_i \dots ,x_{k_n}) < f(x_k) \\
+        f(x_{b_1}, \dots x_{k_i} + b_i \dots ,x_{k_n}) \leq f(x_{b_1}, \dots x_{k_i} - b_i \dots ,x_{k_n})
+    \end{cases}
+$$
+$$ x_{b_i} = x_{k_i} - b_i \;,\text{якщо}
+f(x_{b_1}, \dots x_{k_i} - b_i \dots ,x_{k_n}) < f(x_k)
+$$
+$$ x_{b_i} = x_{k_i} \;,\text{якщо}
+\begin{cases}
+    f(x_{b_1}, \dots x_{k_i} + b_i \dots ,x_{k_n}) \geq f(x_k) \\
+    f(x_{b_1}, \dots x_{k_i} - b_i \dots ,x_{k_n}) \geq f(x_k)
+\end{cases}
+$$
+
+Напрям спуску обирається 2 способами:
+\begin{enumerate}
+    \item (Pattern move) Якщо рух за напрямком з попереднього кроку
+    зменшує нашу функцію, то ми переходимо у цю точку та вже з неї
+    вичерпуючим пошуком знаходимо нову точку. Цей варіант руху допомагає
+    значно прискорити спуск до точки мінімуму.
+    \item Якщо pattern move не вдався ми намагаємось вичерпуючим
+    пошуком з поточної точки знайти нову. Якщо це не вдається, то
+    ми зменшуємо вектор "змін" помноживши його на $\gamma \in (0,1)$.
+    Кількість таких зменшень $t$ є параметром алгоритма, і якщо
+    нової точки знайдено не було, то алгоритм завершує роботу.
+\end{enumerate}
+
+Величину $\alpha$(step size) можна обирати за допомогою методів
+оптимізації функції однієї змінної, або ж взяти за константу.
+Автори цього методу рекомендують обирати $\alpha = 2$.
+Таким чином, об'єднуючи усе це отримаємо алгоритм Гука-Дживса.
+
+\pagebreak
+\SetKw{Break}{break}
+\begin{algorithm}[H] \label{alg:hooke_jeeves}
+    \SetAlgoLined
+    \KwIn{$x_0$, $b$, $\gamma$, $t$}
+    \KwResult{$x_{min}$}
+    $x_1 \leftarrow x_0$\;
+    \While{не виконана умова зупинки}
+    {
+        \If(pattern move){$f(x_k + \alpha (x_k - x_{k-1})) < f(x_k)$}
+        {
+            $x^{'}_k \leftarrow \text{exploratory-search} (x_k + \alpha (x_k - x_{k-1}), b)$ \;
+            $x_{k+1} \leftarrow x_k + \alpha (x^{'}_{k} - x_{k})$ \;
+        }
+        \Else
+        {
+            $j = 0$ \;
+            $x^{i}_{k} \leftarrow x_k$ \;
+            \While{$(t > j) \wedge (f(x^{'}_k) > f(x_k)) $}
+            {
+                $x^{'}_k \leftarrow \text{exploratory-search} (x_k, b \cdot \gamma^{j})$ \;
+                $ j \leftarrow j + 1 $ \;
+            }
+            \If{$t == j$}
+            {
+            \Break
+            }
+            \Else
+            {
+                $ x_{k+1} \leftarrow x^{'}_k $ \;
+            }
+        }
+    }
+    \KwOut{$x_k$}
+    \caption{Метод Гука-Дживса}
+\end{algorithm}
+
+\subsubsection*{Метод Ньютона}
 
 Метод Ньютона являє собою методом спуску, що використовує
 похідні другого цільової функцій, а саме, напрям спуску
@@ -60,7 +265,7 @@ n \in \mathbb{N}$ - параметри):
 ,де $H_k$ - матриця Гессе функції $f$ у точці $x_k$.
 Такий вибір кроку забезпечує більшу швидкість збіжності у
 порівнянні з методами, що використовують лише похідні першого порядку,
-бо більш враховують властивості цільової функції.
+бо більш враховує властивості цільової функції.
 Отже, маємо алгоритм метода Ньютона.
 
 \begin{algorithm}[H] \label{alg:newton}
@@ -77,14 +282,14 @@ n \in \mathbb{N}$ - параметри):
     \caption{Метод Ньютона}
 \end{algorithm}
 
-\subsection*{Квазіньютоновські методи}
+\subsubsection*{Квазіньютоновські методи}
 
 Метод Ньютона вимагає позитивну визначенність матриці Гессе
 цільової функції у точці на кожному кроці. Ця вимога значно обмежує
-Кількість функцій, які ми можемо оптимізувати за допомогою
+кількість функцій, які ми можемо оптимізувати за допомогою
 цього методу. Тому, квазіньютоновські методи використовують
-у процесі своєї роботи не обернений гессіан(як у \ref{eq:newton}),
-а наближенне його значення:
+у процесі своєї роботи не обернений гессіан,
+а наближенне його значення $B_k$:
 \begin{equation}
     p_k = B_k \nabla f_k
 \end{equation}
