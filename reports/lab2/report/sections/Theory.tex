@@ -22,7 +22,7 @@
 Розглянемо один з найвідоміших методів нерегулярного симплекса,
 а саме метод Нелдера-Міда. Він полягає у тому, що на кожному кроці
 алгоритма ми певним чином деформуємо сиплекс(многогранник
-$S \in \mathbb{R}^{n}$, де $n$-розмірність задачі).
+$S_i \in \mathbb{R}^{n},\; i \in \{1,\dots,n+1\}$, де $n$-розмірність задачі).
 Подамо усі можливі деформації ($x_c = \dfrac{\sum\limits_{i=1}^{n} x_i}{n}$):
 \begin{enumerate}
     \item Reflection($\alpha > 0 \in \mathbb{R}$):
@@ -35,57 +35,70 @@ $S \in \mathbb{R}^{n}$, де $n$-розмірність задачі).
 \end{enumerate}
 Порядок застосування данних деформацій наведемо на діаграмі нижче:
 
-% \usetikzlibrary{shapes.geometric, arrows}
-% \tikzstyle{startstop} = [rectangle, rounded corners, text centered, draw=black, fill=red!30]
-% \tikzstyle{process} = [rectangle, text centered, draw=black, fill=orange!30]
-% \tikzstyle{decision} = [rectangle, rounded corners, text width = 2.55cm, text centered, draw=black, fill=green!30]
-% \tikzstyle{arrow} = [thick,->,>=stealth]
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{startstop} = [rectangle, rounded corners, text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [rectangle, rounded corners, text width = 2.55cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
 
-% \begin{figure}[h!]
-%     \begin{center}
-%         \begin{tikzpicture}[node distance=1.5cm]
-%             \node[startstop] (start) at(-8,-2) {start};
-%             \node[decision] (criterion) at (-5,-2) {Виконується критерій зупинки?};
+\begin{figure}[h!]
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.5cm]
+            \node[startstop] (start) at(-8,-2) {start};
+            \node[decision] (criterion) at (-5.5,-2) {Виконується критерій зупинки?};
 
-%             \node[process] (final_sort) at(-5,-4.7) {Sort};
-%             \node[startstop] (stop) at(-5,-6.5) {$x_{min} = x_1$};
+            \node[process] (final_sort) at(-5.5,-4.7) {Sort};
+            \node[startstop] (stop) at(-5.5,-6.5) {$x_{min} = x_1$};
 
-%             \node[process] (sort) at (-1, -2) {Sort};
-%             \node[process] (reflection) at (2, -2) {Reflection};
-%             \node[decision] (ref_check) at (5.5, -2) {$f(x_1)\leq f(x_r)$ $f(x_r)<f(x_n)$};
+            \node[process] (sort) at (-2.75, -2) {Sort};
+            \node[process] (reflection) at (-0.5, -2) {Reflection};
+            \node[decision] (ref_check) at (2.5, -2) {$f(x_1)\leq f(x_r)$ $f(x_r)<f(x_n)$};
+            \node[decision] (exp_contr_check) at (6, -2) {$f(x_r)<f(x_1)$};
 
-%             \node[process] (contraction) at (5.5, 0.5) {Contraction};
-%             \node[process] (expansion) at (5.5, -4.7) {Expansion};
+            \node[process] (contraction) at (6, 0.5) {Contraction};
+            \node[process] (expansion) at (6, -4.7) {Expansion};
 
-%             \node[decision] (contr_check) at (2, 0.5) {$f(x_c) < f(x_{n+1})$};
-%             \node[decision] (exp_check) at (2, -4.7) {$f(x_e) < f(x_r)$};
+            \node[decision] (contr_check) at (2.5, 0.5) {$f(x_{contr}) < f(x_{n+1})$};
+            \node[decision] (exp_check) at (2.5, -4.7) {$f(x_e) < f(x_r)$};
 
-%             \node[process] (shrink) at (-1, 0.5) {Shrink};
+            \node[process] (shrink) at (-0.5, 0.5) {Shrink};
 
-%             \draw[arrow] (start)--(criterion);
+            \draw[arrow] (start)--(criterion);
 
-%             \draw[arrow] (criterion)--node[anchor=east]{так} (final_sort);
-%             \draw[arrow] (final_sort)--(stop);
+            \draw[arrow] (criterion)--node[anchor=east]{так} (final_sort);
+            \draw[arrow] (final_sort)--(stop);
 
-%             \draw[arrow] (criterion)--node[anchor=south]{ні} (sort);
-%             \draw[arrow] (sort)--(reflection);
+            \draw[arrow] (criterion)--node[anchor=south]{ні} (sort);
+            \draw[arrow] (sort)--(reflection);
 
-%             \draw[arrow] (reflection)--(ref_check);
-%             \draw[arrow] (ref_check)--node[anchor=east]{так} ++(0,-1.5)
-%             --node[anchor=south]{$x_{n+1}=x_r$} ++(-8,0)--(criterion);
+            \draw[arrow] (reflection)--(ref_check);
+            \draw[arrow] (ref_check)--node[anchor=east]{так} ++(0,-1.5)
+            --node[anchor=south]{$x_{n+1}=x_r$} ++(-7,0)--(criterion);
 
-%             \draw[arrow] (ref_check)--++(2,0)--
-%             node[anchor=west, yshift=-1.5cm, xshift=-0.3cm, rotate=90]{$f(x_r) < f(x_1)$}
-%             ++(0,-2.7)--(expansion);
-%             \draw[arrow] (ref_check)--++(2,0)--
-%             node[anchor=west, yshift=-1.5cm, xshift=0.3cm, rotate=90]{$f(x_r) \geq f(x_n)$}
-%             ++(0,2.5)--(contraction);
+            \draw[arrow] (ref_check)--node[anchor=south]{ні} (exp_contr_check);
 
-%         \end{tikzpicture}
-%     \end{center}
-%     \caption{Блок-схема метода Нелдера-Міда}
-%     \label{fig:nelder_mead}
-% \end{figure}
+            \draw[arrow] (exp_contr_check)--node[anchor=east]{так} (expansion);
+            \draw[arrow] (exp_contr_check)--node[anchor=east]{ні} (contraction);
+
+            \draw[arrow] (expansion)--(exp_check);
+            \draw[arrow] (contraction)--(contr_check);
+
+            \draw[arrow] (contr_check)--node[anchor=south]{ні} (shrink);
+            \draw[arrow] (contr_check)--node[anchor=west]{так}
+            ++(0, -1)--node[anchor=south]{$x_{n+1} = x_{contr}$}++(-8, 0)--(criterion);
+            \draw[arrow] (exp_check)--node[anchor=south]{так \;\; $x_{n+1} = x_e$}
+            ++(-7, 0)--(criterion);
+            \draw[arrow] (exp_check)--node[anchor=west]{ні}
+            ++(0,1.2)--++(-7,0)--(criterion);
+
+
+            \draw[arrow] (shrink)--++(-5, 0)--(criterion);
+
+        \end{tikzpicture}
+    \end{center}
+    \caption{Блок-схема метода Нелдера-Міда}
+    \label{fig:nelder_mead}
+\end{figure}
 
 Отже, отримаємо алгоритм метода Нелдера-Міда.
 
