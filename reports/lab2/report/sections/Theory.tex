@@ -362,9 +362,9 @@ $$
 \tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, text width=2cm, draw=black, fill=green!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
-\begin{figure}
+\begin{figure}[h!]
     \begin{center}
-        \begin{tikzpicture}[node distance=2cm]
+        \begin{tikzpicture}[node distance=1.9cm]
             \node (start) [startstop] {START};
             \node (step1) [process, below of=start, yshift=-0.35cm] {Ініціалізація - формування початкової популяції хромосом};
             \node (step2) [process, below of=step1, yshift=-0.5cm] {Обчислення пристосованості хромосом у популяції};
@@ -383,7 +383,7 @@ $$
             \draw [arrow] (step3) -- (stop);
             \draw [arrow] (step4) -- (step5);
             \draw [arrow] (step5) -- (step6);
-            \draw [arrow] (step6.west) -- ++(-3,0) -- ++(0,12) -- (step2);
+            \draw [arrow] (step6.west) -- ++(-3,0) -- ++(0,11.6) -- (step2);
         \end{tikzpicture}
     \end{center}
     \caption{Блок-схема генетичного алгоритму}
