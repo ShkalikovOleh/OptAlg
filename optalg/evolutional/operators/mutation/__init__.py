@@ -1,2 +1,2 @@
 from .mutation_base import MutationOperator
-from .simple_mutation import SimpleMutation
+from .inverse_mutation import InverseMutation

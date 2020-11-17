@@ -13,7 +13,8 @@ class PointCrossover(CrossoverOperator):
 
     def __call__(self, mating_genotypes: np.ndarray) -> np.ndarray:
         offspring_pop = np.copy(mating_genotypes)
-        for i in range(mating_genotypes.shape[0], 2):
+        n_pop = mating_genotypes.shape[0]
+        for i in range(0, n_pop, 2):
             for l in range(mating_genotypes.shape[2]):
                 if self.__proba >= np.random.random():
                     points = np.random.choice(
@@ -25,12 +26,12 @@ class PointCrossover(CrossoverOperator):
                         if j % 2 == 0:
                             offspring_pop[i, begin: points[j], l
                                           ] = mating_genotypes[i, begin:points[j], l]
-                            offspring_pop[i + 1, begin: points[j], l
-                                          ] = mating_genotypes[i+1, begin:points[j], l]
+                            offspring_pop[(i + 1) % n_pop, begin: points[j], l
+                                          ] = mating_genotypes[(i+1) % n_pop, begin:points[j], l]
                         else:
                             offspring_pop[i, begin: points[j], l
-                                          ] = mating_genotypes[i+1, begin:points[j], l]
-                            offspring_pop[i + 1, begin: points[j], l
+                                          ] = mating_genotypes[(i+1) % n_pop, begin:points[j], l]
+                            offspring_pop[(i + 1) % n_pop, begin: points[j], l
                                           ] = mating_genotypes[i, begin:points[j], l]
 
         return offspring_pop
