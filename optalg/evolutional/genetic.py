@@ -52,7 +52,7 @@ class Genetic(Optimizer):
 
             self.__history.append(self.__decoder(population))
 
-        idx = np.argmax(np.apply_along_axis(f, axis=1, arr=self.__history[-1]))
+        idx = np.argmin(np.apply_along_axis(f, axis=1, arr=self.__history[-1]))
         x = self.__history[-1][idx, :]
         res = OptimizeResult(f=f, x=x,
                              n_iter=len(self.__history) - 1,
