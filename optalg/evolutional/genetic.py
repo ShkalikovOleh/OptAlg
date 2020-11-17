@@ -39,7 +39,7 @@ class Genetic(Optimizer):
         self.__history.clear()
 
         population = self.__generate_population()
-        self.__history.append(self.__decoder(population))
+        self.__history.append(self.__decoder(population).copy())
 
         while not self.__stop_criterion.match(f, self.__history):
             mating_pool_idx = self.__selector(f, self.__decoder(population))
@@ -50,7 +50,7 @@ class Genetic(Optimizer):
             offspring_genotypes = self.__crossover(mating_pool)
             population = self.__mutator(offspring_genotypes)
 
-            self.__history.append(self.__decoder(population))
+            self.__history.append(self.__decoder(population).copy())
 
         idx = np.argmin(np.apply_along_axis(f, axis=1, arr=self.__history[-1]))
         x = self.__history[-1][idx, :]
