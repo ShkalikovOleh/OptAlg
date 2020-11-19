@@ -135,14 +135,5 @@ dmypy.json
 #misc
 .DS_Store
 
-#Latex service files
-*.aux
-*.bbl
-*.blg
-*.fls
-*.fdb_*
-*.out
-*.synctex.gz
-
 #other report
-lab1/
+reports/

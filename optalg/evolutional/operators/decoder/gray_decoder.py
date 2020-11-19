@@ -9,7 +9,7 @@ class GrayDecoder(Decoder):
         self.__bounds = bounds
 
     def __call__(self, genotype: np.ndarray) -> np.ndarray:
-        l = genotype.shape[1]
+        l = genotype.shape[2]
 
         def to_dec(bin_code):
             dec_code = 0.0
@@ -21,4 +21,4 @@ class GrayDecoder(Decoder):
                                ) / (2 ** l - 1) + self.__bounds[0]
             return real
 
-        return np.apply_along_axis(to_dec, axis=1, arr=genotype)
+        return np.apply_along_axis(to_dec, axis=2, arr=genotype)

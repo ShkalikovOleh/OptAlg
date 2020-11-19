@@ -13,6 +13,7 @@ class Genetic(Optimizer):
                  selector,
                  crossover,
                  mutator,
+                 merger,
                  bin_length: int = 22) -> None:
         assert(n_variables > 0)
         assert(n_population > 0)
@@ -24,6 +25,7 @@ class Genetic(Optimizer):
         self.__decoder = decoder
         self.__crossover = crossover
         self.__mutator = mutator
+        self.__merger = merger
         self.__n_variables = n_variables
         self.__bin_lenght = bin_length
         self.__n_population = n_population
@@ -32,25 +34,21 @@ class Genetic(Optimizer):
     def __generate_population(self):
         size = self.__n_population * self.__bin_lenght * self.__n_variables
         population = np.random.randint(2, size=size). \
-            reshape(self.__n_population, self.__bin_lenght, self.__n_variables)
+            reshape(self.__n_population, self.__n_variables, self.__bin_lenght)
         return population
 
     def optimize(self, f: Callable) -> OptimizeResult:
         self.__history.clear()
 
         population = self.__generate_population()
-        self.__history.append(self.__decoder(population).copy())
+        self.__history.append(self.__decoder(population))
 
         while not self.__stop_criterion.match(f, self.__history):
-            mating_pool_idx = self.__selector(f, self.__decoder(population))
-            mating_pool = np.empty_like(population)
-            for i, idx in enumerate(mating_pool_idx):
-                mating_pool[i, :, :] = population[idx, :, :]
-
-            offspring_genotypes = self.__crossover(mating_pool)
-            population = self.__mutator(offspring_genotypes)
-
-            self.__history.append(self.__decoder(population).copy())
+            parents_idx = self.__selector(f, self.__decoder(population))
+            offspring_genotypes = self.__crossover(population, parents_idx)
+            children = self.__mutator(offspring_genotypes)
+            population = self.__merger(population, children, f, self.__decoder)
+            self.__history.append(self.__decoder(population))
 
         idx = np.argmin(np.apply_along_axis(f, axis=1, arr=self.__history[-1]))
         x = self.__history[-1][idx, :]

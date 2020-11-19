@@ -4,5 +4,5 @@ from abc import ABC, abstractmethod
 class CrossoverOperator(ABC):
 
     @abstractmethod
-    def __call__(self, mating_genotypes: np.ndarray) -> np.ndarray:
+    def __call__(self, population: np.ndarray, parents_idx: np.ndarray) -> np.ndarray:
         pass

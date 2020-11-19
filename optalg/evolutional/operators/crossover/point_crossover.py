@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.random import choice, random
 from .crossover_base import CrossoverOperator
 
 
@@ -11,27 +12,30 @@ class PointCrossover(CrossoverOperator):
         self.__k = k
         self.__proba = proba
 
-    def __call__(self, mating_genotypes: np.ndarray) -> np.ndarray:
-        offspring_pop = np.copy(mating_genotypes)
-        n_pop = mating_genotypes.shape[0]
-        for i in range(0, n_pop, 2):
-            for l in range(mating_genotypes.shape[2]):
-                if self.__proba >= np.random.random():
-                    points = np.random.choice(
-                        np.arange(mating_genotypes.shape[1]), size=self.__k, replace=False)
+    def __call__(self, population: np.ndarray, parents_idx: np.ndarray) -> np.ndarray:
+        assert parents_idx.shape[1] == 2
+
+        children = np.copy(population)
+        _, n_var, n_bin = population.shape
+        for i in range(parents_idx.shape[0]):
+            p1 = parents_idx[i, 0]
+            p2 = parents_idx[i, 1]
+
+            for j in range(n_var):
+                t = 0
+                if self.__proba >= random(): #check here more productive
+                    points = choice(range(1, n_bin-1),
+                                    size=self.__k, replace=False)
                     points = np.sort(points)
 
-                    begin = 0
-                    for j in range(self.__k):
-                        if j % 2 == 0:
-                            offspring_pop[i, begin: points[j], l
-                                          ] = mating_genotypes[i, begin:points[j], l]
-                            offspring_pop[(i + 1) % n_pop, begin: points[j], l
-                                          ] = mating_genotypes[(i+1) % n_pop, begin:points[j], l]
-                        else:
-                            offspring_pop[i, begin: points[j], l
-                                          ] = mating_genotypes[(i+1) % n_pop, begin:points[j], l]
-                            offspring_pop[(i + 1) % n_pop, begin: points[j], l
-                                          ] = mating_genotypes[i, begin:points[j], l]
+                    for l, point in enumerate(points):
+                        if l % 2 == 0:
+                            children[p1, j, t:point] = population[p2, j, t:point]
+                            children[p2, j, t:point] = population[p1, j, t:point]
+                        t = point
 
-        return offspring_pop
+                    if self.__k % 2 == 0:
+                        children[p1, j, t:] = population[p2, j, t:]
+                        children[p1, j, t:] = population[p2, j, t:]
+
+        return children
