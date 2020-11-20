@@ -9,34 +9,37 @@ from .decoder import Decoder
 
 class EvolutionalBase(Optimizer):
 
-    def __init__(self, stop_criterion: StopCriterion, generator: Generator, decoder: Decoder) -> None:
-        super.__init__()
+    def __init__(self, n_variables: int, population_size: int, stop_criterion: StopCriterion,
+                 generator: Generator, decoder: Decoder) -> None:
+        super().__init__()
+        self._n_variables = n_variables
+        self._population_size = population_size
         self._stop_criterion = stop_criterion
         self._generator = generator
         self._decoder = decoder
 
     @abstractmethod
-    def _select(self, population: np.ndarray):
+    def _select(self, f: Callable, population: np.ndarray):
         pass
 
     @abstractmethod
-    def _reproduct(self, mating_pool: np.ndarray):
+    def _reproduce(self, f: Callable, mating_pool: np.ndarray):
         pass
 
     @abstractmethod
-    def _replace(self, children: np.ndarray, parents: np.ndarray):
+    def _replace(self, f: Callable, children: np.ndarray, parents: np.ndarray):
         pass
 
     def optimize(self, f: Callable) -> OptimizeResult:
-        population = self._generator.generate()
+        population = self._generator(self._population_size, self._n_variables)
 
         history = []
         history.append(self._decoder(population))
 
-        while self._stop_criterion.match(f, history):
-            mating_pool = self._select(population)
-            children = self._reproduct(mating_pool)
-            population = self._replace(children, population)
+        while not self._stop_criterion.match(f, history):
+            mating_pool = self._select(f, population)
+            children = self._reproduce(f, mating_pool)
+            population = self._replace(f, children, population)
             history.append(self._decoder(population))
 
         idx = np.argmin(np.apply_along_axis(f, axis=1, arr=history[-1]))
