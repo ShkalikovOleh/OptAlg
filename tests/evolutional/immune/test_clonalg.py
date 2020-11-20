@@ -24,5 +24,4 @@ class ClonAlgTests(unittest.TestCase, InRangeAssertion):
         res = opt.optimize(self.f)
 
         hist = res.x_history
-        self.assertEqual(np.linalg.norm(hist[-1, 0, :] - res.x), 0)
         self.assertEqual(hist.shape, (16, 7, 2))
