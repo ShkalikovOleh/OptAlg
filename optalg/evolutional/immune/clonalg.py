@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Callable
+from ...stop_criteria import StopCriterion
 from ..evolutional_base import EvolutionalBase
 from ..generator import BinaryGenerator
 from ..decoder import GrayDecoder
@@ -8,11 +9,16 @@ from ..decoder import GrayDecoder
 class ClonAlg(EvolutionalBase):
 
     def __init__(self, n_variables: int, population_size: int,
-                 stop_criterion, range, clone_multiplier=5,
-                 max_mutation_rate=0.3, to_replace=2) -> None:
+                 stop_criterion: StopCriterion, range, clone_multiplier: int = 5,
+                 max_mutation_rate: float = 0.3, to_replace: int = 2) -> None:
+
+        assert clone_multiplier > 0
+        assert max_mutation_rate <= 1 and max_mutation_rate > 0
+        assert to_replace >= 0
 
         super().__init__(n_variables, population_size, stop_criterion,
                          BinaryGenerator(22), GrayDecoder(range))
+
         self.__clone_mult = clone_multiplier
         self.__max_mut_rate = max_mutation_rate
         self.__to_replace = to_replace
@@ -23,11 +29,11 @@ class ClonAlg(EvolutionalBase):
 
         sorted_idx = np.argsort(np.apply_along_axis(
             f, axis=1, arr=self._decoder(population)))
-        population = population[sorted_idx, ...]
+        population = population[sorted_idx]
 
         mating_pool = np.empty((k*pop_size, n_var, n_genes))
         for i in range(0, pop_size, k):  # clone
-            mating_pool[i:i+k, ...] = population[i, ...]
+            mating_pool[i:i+k] = population[i]
 
         return mating_pool
 
@@ -49,12 +55,11 @@ class ClonAlg(EvolutionalBase):
             mutated = np.empty((self.__clone_mult,
                                 self._n_variables, mating_pool.shape[2]))
             for i in range(self.__clone_mult):
-                mutated[i, ...] = self.__mutate(
-                    mating_pool[j+i, ...], mut_rate)
+                mutated[i] = self.__mutate(mating_pool[j+i], mut_rate)
 
             min_idx = np.argmin(np.apply_along_axis(
                 f, axis=1, arr=self._decoder(mutated)))
-            children[j // self.__clone_mult, ...] = mutated[min_idx, ...]
+            children[j // self.__clone_mult] = mutated[min_idx]
 
         return children
 
@@ -66,10 +71,10 @@ class ClonAlg(EvolutionalBase):
         f_parents = np.apply_along_axis(f, axis=1, arr=parents_phenotypes)
 
         mask = f_children > f_parents
-        children[mask, ...] = parents[mask, ...]  # insert
+        children[mask] = parents[mask]  # insert
         f_children[mask] = f_parents[mask]
 
         worst_idx = np.argsort(f_children)[-self.__to_replace:]  # edit
-        children[worst_idx, ...] = self._generator(2, self._n_variables)
+        children[worst_idx] = self._generator(2, self._n_variables)
 
         return children

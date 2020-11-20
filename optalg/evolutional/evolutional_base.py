@@ -11,6 +11,9 @@ class EvolutionalBase(Optimizer):
 
     def __init__(self, n_variables: int, population_size: int, stop_criterion: StopCriterion,
                  generator: Generator, decoder: Decoder) -> None:
+        assert n_variables > 0
+        assert population_size > 0
+
         super().__init__()
         self._n_variables = n_variables
         self._population_size = population_size
