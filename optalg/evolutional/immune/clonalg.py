@@ -75,6 +75,7 @@ class ClonAlg(EvolutionalBase):
         f_children[mask] = f_parents[mask]
 
         worst_idx = np.argsort(f_children)[-self.__to_replace:]  # edit
-        children[worst_idx] = self._generator(2, self._n_variables)
+        children[worst_idx] = self._generator(
+            self.__to_replace, self._n_variables)
 
         return children

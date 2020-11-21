@@ -14,7 +14,7 @@ class ClonAlgTests(unittest.TestCase, InRangeAssertion):
 
     def test_convergence(self):
         criterion = IterationNumberCriterion(30)
-        opt = ClonAlg(2, 10, criterion, [(-5, 5), (-5, 5)])
+        opt = ClonAlg(2, 10, criterion, [(-5, 5), (-5, 5)], to_replace=3)
         res = opt.optimize(self.f)
         self.assertInRange(res.x, np.array([[0], [0]]), 10**-1)
 
