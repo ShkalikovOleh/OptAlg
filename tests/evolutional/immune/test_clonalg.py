@@ -1,7 +1,8 @@
 import unittest
 import numpy as np
-from optalg.immune import ClonAlg
-from ..inrange_assertion import InRangeAssertion
+from optalg.evolutional.immune import ClonAlg
+from optalg.stop_criteria import IterationNumberCriterion
+from ...inrange_assertion import InRangeAssertion
 
 
 class ClonAlgTests(unittest.TestCase, InRangeAssertion):
@@ -12,15 +13,15 @@ class ClonAlgTests(unittest.TestCase, InRangeAssertion):
             0.5*(np.cos(2 * np.pi * x[0]) + np.cos(2 * np.pi * x[1]))) + np.e + 20
 
     def test_convergence(self):
-        opt = ClonAlg(2, ((-5, 5), (-5, 5)))
+        criterion = IterationNumberCriterion(30)
+        opt = ClonAlg(2, 10, criterion, [(-5, 5), (-5, 5)], to_replace=3)
         res = opt.optimize(self.f)
         self.assertInRange(res.x, np.array([[0], [0]]), 10**-1)
 
     def test_history(self):
-        opt = ClonAlg(2, ((-5, 5), (-5, 5)),
-                      n_generations=15, population_size=7)
+        criterion = IterationNumberCriterion(15)
+        opt = ClonAlg(2, 7, criterion, [(-5, 5), (-5, 5)])
         res = opt.optimize(self.f)
 
         hist = res.x_history
-        self.assertEqual(np.linalg.norm(hist[-1, 0, :] - res.x), 0)
         self.assertEqual(hist.shape, (16, 7, 2))

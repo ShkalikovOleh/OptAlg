@@ -88,7 +88,14 @@ Second-order descent algorithms
   - [SR1](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/descent/newton/SR1.py) - Symmetric Rank 1 method
   - [Broyden](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/descent/newton/broyden.py) - Broyden's method
 
-### Immune
+### Evolutional
+Methods based on natural evolution. On each iteration methods select "best"
+individual from population, reproduce new generation and replace previous individuals.
+
+Population generates by generator and phenotype of each individuals
+determines via decoder. Avaliable decoder:
+- [Gray](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/evolutional/decoder/gray.py) - reflected binary code
+#### Immune
 Artificial immune system
 
 - [ClonAlg](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/immune/clonalg.py) - clonal selection algorithm
