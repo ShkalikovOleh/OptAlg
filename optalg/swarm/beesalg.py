@@ -5,7 +5,7 @@ from numpy.random import uniform
 
 
 class BeeColony(Optimizer):
-    def __init__(self, n_variables, x_range, n_iter, delta, n_scout=20, n_research=15, n_elite=5,
+    def __init__(self, n_variables, x_range, n_iter, delta, n_scout=30, n_research=25, n_elite=10,
                  bees_elite=5, bees_rest=3, maximize=False):
         super().__init__()
         self.n_variables = n_variables
@@ -31,7 +31,7 @@ class BeeColony(Optimizer):
         history = []
         while n <= self.n_iter:
             self._solutions.sort(key=f, reverse=self.maximize)
-            history.append(self._solutions)
+            history.append(np.array(self._solutions))
             for i in range(self.n_research):
                 if i < self.n_elite:
                     r = self.bees_elite
@@ -49,7 +49,7 @@ class BeeColony(Optimizer):
                                                 size=self.n_variables)
             n += 1
         self._solutions.sort(key=f, reverse=self.maximize)
-        history.append(self._solutions)
+        history.append(np.array(self._solutions))
         xmin = self._solutions[0]
         res = OptimizeResult(f=f, x=xmin,
                              n_iter=len(history) - 1,
