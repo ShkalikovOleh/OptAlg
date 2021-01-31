@@ -98,4 +98,11 @@ determines via decoder. Avaliable decoder:
 #### Immune
 Artificial immune system
 
-- [ClonAlg](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/immune/clonalg.py) - clonal selection algorithm
+- [ClonAlg](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/evolutional/immune/clonalg.py) - clonal selection algorithm
+
+### Penalty
+Set of method for constrained optimization that use penalty function for representing constraints
+
+- [Penalty](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/penalty/penalty.py) - penalty function for external point
+- [Barrier](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/penalty/barrier.py) - barrier function for internal point
+- [Augmented Lagragian](https://github.com/ShkalikovOleh/OptAlg/blob/master/optalg/penalty/augmented_lagrangian.py) - modified Lagrangian for match inequality constraints

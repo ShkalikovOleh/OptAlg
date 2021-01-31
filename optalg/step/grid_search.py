@@ -25,5 +25,7 @@ class GridSearch(StepOptimizer):
 
     def optimize(self, f: Callable, xk: np.ndarray, pk: np.ndarray):
         a = np.linspace(self.__bounds[0], self.__bounds[1], self.__n)
-        y = f(xk - a*pk)
+        y = np.empty_like(a)
+        for i, ak in enumerate(a):
+            y[i] = f(xk - ak*pk)
         return OptimizeResult(x=a[np.argmin(y)])

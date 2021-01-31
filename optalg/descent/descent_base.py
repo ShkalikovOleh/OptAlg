@@ -42,11 +42,16 @@ class DescentOptimizerBase(Optimizer):
         xhist = np.array(self._history).reshape(
             (len(self._history), xk.shape[0]))
 
+        if len(self._phistory) > 0:
+            direction_history = np.array(self._phistory)[..., 0]
+        else:
+            direction_history = []
+
         res = OptimizeResult(f=f, x=xk.reshape(-1),
                              x_history=xhist,
                              n_iter = len(self._ahistory),
                              step_history=np.array(self._ahistory),
-                             direction_history=np.array(self._phistory)[..., 0])
+                             direction_history=direction_history)
 
         self._history.clear()
         self._ahistory.clear()
