@@ -99,26 +99,6 @@ class FunctionNormCriterion(NormCriterion):
             return True
 
 
-class CycleCriterion(NormCriterion):
-
-    def __init__(self, epsilon) -> None:
-        super().__init__(epsilon)
-
-    def match(self, f, x_history):
-        if len(x_history) < 3:
-            return False
-        elif isinstance(x_history[-1], np.ndarray):
-            if x_history[-1].ndim > 2:
-                raise NonIncompatibleStopCriterionException()
-            elif x_history[-1].ndim == 2 and x_history[-1].shape[1] != 1:
-                raise NonIncompatibleStopCriterionException()
-
-        if np.linalg.norm(f(x_history[-1]) - f(x_history[-3])) > self._epsilon:
-            return False
-        else:
-            return True
-
-
 class StdFunctionNormCriterion(NormCriterion):
 
     def __init__(self, epsilon) -> None:

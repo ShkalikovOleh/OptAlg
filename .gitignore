@@ -134,6 +134,3 @@ dmypy.json
 
 #misc
 .DS_Store
-
-#reports
-/reports
