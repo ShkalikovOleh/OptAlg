@@ -1,6 +1,6 @@
 from typing import Callable
 import numpy as np
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 from abc import abstractmethod
 from ..descent_base import DescentOptimizerBase
 
@@ -47,7 +47,7 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
         return pk
 
     def optimize(self, f:Callable, x0: np.ndarray):
-        self._grad = egrad(f)
+        self._grad = agrad(f)
         self._iteration_number = 0
         self._pgrad = np.zeros(shape=(x0.shape[0], 1))
         return super().optimize(f, x0)

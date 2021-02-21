@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable
 from abc import abstractmethod
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 from ..descent_base import DescentOptimizerBase
 
 
@@ -28,7 +28,7 @@ class NewtonBase(DescentOptimizerBase):
         return hinv @ grad
 
     def optimize(self, f: Callable, x0: np.ndarray) -> np.ndarray:
-        self._grad = egrad(f)
+        self._grad = agrad(f)
         self._pgrad = np.zeros_like(self._grad)
 
         res = super().optimize(f, x0)

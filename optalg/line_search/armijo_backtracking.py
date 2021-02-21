@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Callable
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 from .line_searcher import LineSearcher
 
 
@@ -12,7 +12,7 @@ class ArmijoBacktracking(LineSearcher):
         self.__c = c
 
     def optimize(self, f: Callable, xk: np.ndarray, pk: np.ndarray):
-        m = - self.__c * np.dot(pk.T, egrad(f)(xk))
+        m = - self.__c * np.dot(pk.T, agrad(f)(xk))
         ak = self.__a
 
         while f(xk - ak * pk) - f(xk) > ak*m:

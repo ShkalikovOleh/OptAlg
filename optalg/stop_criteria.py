@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 
 
 class NonIncompatibleStopCriterionException(Exception):
@@ -52,7 +52,7 @@ class GradientNormCriterion(NormCriterion):
         elif x_history[-1].ndim == 1 or x_history[-1].shape[1] != 1 or x_history[-1].ndim > 2:
             raise NonIncompatibleStopCriterionException()
 
-        grad = egrad(f)
+        grad = agrad(f)
         if np.linalg.norm(grad(x_history[-1])) > self._epsilon:
             return False
         else:

@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Callable
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 from .line_searcher import LineSearcher
 
 
@@ -18,7 +18,7 @@ class BisectionWolfe(LineSearcher):
 
     def optimize(self, f: Callable, xk: np.ndarray, pk: np.ndarray):
         def gdk(x):
-            return np.dot(pk.T, egrad(f)(x))
+            return np.dot(pk.T, agrad(f)(x))
 
         ak = self.__a
         d = 0

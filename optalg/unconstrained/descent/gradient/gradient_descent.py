@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Callable
-from autograd import elementwise_grad as egrad
+from autograd import grad as agrad
 from ..descent_base import DescentOptimizerBase
 
 
@@ -13,5 +13,5 @@ class GradientDescent(DescentOptimizerBase):
         return self._grad(xk)
 
     def optimize(self, f: Callable, x0: np.ndarray):
-        self._grad = egrad(f)
+        self._grad = agrad(f)
         return super().optimize(f, x0)
