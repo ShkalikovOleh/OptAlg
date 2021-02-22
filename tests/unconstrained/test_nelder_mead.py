@@ -20,14 +20,3 @@ class NelderMeadTests(unittest.TestCase, InRangeAssertion):
         res = opt.optimize(self.f, NelderMead.generate_initial_simplex(x0, 2))
 
         self.assertInRange(res.x, np.array([3, 1]), 10**-3)
-
-    def test_get_history(self):
-        iteration_count = 10
-        nCriterion = IterationNumberCriterion(iteration_count)
-
-        opt = NelderMead(nCriterion)
-
-        x0 = np.array([-2, -2])
-        res = opt.optimize(self.f, NelderMead.generate_initial_simplex(x0, 2))
-
-        self.assertEqual(iteration_count, res.x_history.shape[0] - 1)

@@ -25,15 +25,3 @@ class AugmentedLagrangianTests(unittest.TestCase, InRangeAssertion):
                            ineq_constraints=[lambda x: x[0]+x[1]-2])
 
         self.assertInRange(res.x, np.array([1, 0]), 10**-3)
-
-    def test_get_history(self):
-        gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = ArmijoBacktracking(1, 0.5)
-        unc_opt = BFGS(gnCriterion, step_opt)
-
-        opt = AugmentedLagrangian(unc_opt)
-        res = opt.optimize(self.f, np.array([-4, 6]),
-                           eq_constraints=[lambda x: x[0]+x[1]-2],
-                           ineq_constraints=[lambda x: -x[0]])
-
-        self.assertEqual(2, res.x_history.ndim)

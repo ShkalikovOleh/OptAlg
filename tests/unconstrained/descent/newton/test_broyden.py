@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from optalg.unconstrained.descent import Broyden
-from optalg.line_search import BisectionWolfe
-from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
+from optalg.line_search import ArmijoBacktracking
+from optalg.stop_criteria import GradientNormCriterion
 from ....inrange_assertion import InRangeAssertion
 
 
@@ -13,22 +13,10 @@ class BroydenTests(unittest.TestCase, InRangeAssertion):
         return (x[0]**2 - x[1])**2 + (x[0] - 1)**2
 
     def test_convergence(self):
-        gnCriterion = GradientNormCriterion(10**-3)
-        step_opt = BisectionWolfe()
+        gnCriterion = GradientNormCriterion(10**-4)
+        step_opt = ArmijoBacktracking(1, 0.5)
 
         opt = Broyden(gnCriterion, step_opt)
         res = opt.optimize(self.f, np.array([-1, -2]))
 
         self.assertInRange(res.x, np.array([1, 1]), 10**-3)
-
-    def test_get_history(self):
-        iteration_count = 10
-        nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = BisectionWolfe()
-
-        opt = Broyden(nCriterion, step_opt)
-        res = opt.optimize(self.f, np.array([-1, -2]))
-
-        hist = res.x_history
-        self.assertEqual(iteration_count, hist.shape[0] - 1)
-        self.assertEqual(2, hist.shape[1])

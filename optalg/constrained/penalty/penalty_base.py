@@ -1,13 +1,12 @@
 import numpy as np
 from typing import Callable, List, Generator
 from abc import abstractmethod
-from ...unconstrained.descent.descent_base import DescentOptimizerBase
 from ...optimizer import OptimizeResult, Optimizer
 
 
 class PenaltyBase(Optimizer):
 
-    def __init__(self, unc_optimizer: DescentOptimizerBase, epsilon: float) -> None:
+    def __init__(self, unc_optimizer: Optimizer, epsilon: float) -> None:
         self._unc_opt = unc_optimizer
         self._epsilon = epsilon
 
@@ -20,10 +19,7 @@ class PenaltyBase(Optimizer):
                  eq_constraints: List[Callable] = [],
                  ineq_constraints: List[Callable] = []) -> OptimizeResult:
         xk = x0
-
         iter = 0
-        history = []
-        history.append(xk)
 
         def P(x):
             return self._epsilon + 1  # for initial check
@@ -37,22 +33,19 @@ class PenaltyBase(Optimizer):
             res = self._unc_opt.optimize(F, xk)
 
             xk = res.x
-            history.extend(res.x_history[1:])
             iter += 1
 
         res = OptimizeResult(f=f, x=xk,
                              n_iter=iter,
-                             n_unc_opt_iter=len(history),
                              equality_constraints=eq_constraints,
-                             inequality_constraints=ineq_constraints,
-                             x_history=np.array(history))
+                             inequality_constraints=ineq_constraints)
 
         return res
 
 
 class CustomizablePenaltyBase(PenaltyBase):
 
-    def __init__(self, unc_optimizer: DescentOptimizerBase,
+    def __init__(self, unc_optimizer: Optimizer,
                  r_eq_generator: Generator[float, None, None],
                  r_ineq_generator: Generator[float, None, None],
                  eq_penalfty_func: Callable,

@@ -1,8 +1,7 @@
 import numpy as np
 from autograd.numpy import log
 from typing import Callable, Generator, List
-from ...unconstrained.descent.descent_base import DescentOptimizerBase
-from ...optimizer import OptimizeResult
+from ...optimizer import OptimizeResult, Optimizer
 from .penalty_base import CustomizablePenaltyBase
 from .utils import *
 
@@ -18,7 +17,7 @@ class Interior(CustomizablePenaltyBase):
     F(x) = f(x) + r_eq * eq_penalty(eq_constr(x)) - r_ineq * ineq_penalty(ineq_constr(x))
     """
 
-    def __init__(self, unc_optimizer: DescentOptimizerBase,
+    def __init__(self, unc_optimizer: Optimizer,
                  r_eq_generator: Generator[float,
                                            None, None] = r_generator(1/2, 4),
                  r_ineq_generator: Generator[float,

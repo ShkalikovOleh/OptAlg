@@ -1,14 +1,13 @@
 import numpy as np
 from typing import Callable, List, Generator
-from ...unconstrained.descent.descent_base import DescentOptimizerBase
-from ...optimizer import OptimizeResult
+from ...optimizer import OptimizeResult, Optimizer
 from .penalty_base import CustomizablePenaltyBase
 from .utils import *
 
 
 class AugmentedLagrangian(CustomizablePenaltyBase):
 
-    def __init__(self, unc_optimizer: DescentOptimizerBase,
+    def __init__(self, unc_optimizer: Optimizer,
                  r_eq_generator: Generator[float,
                                            None, None] = r_generator(1, 10),
                  r_ineq_generator: Generator[float,

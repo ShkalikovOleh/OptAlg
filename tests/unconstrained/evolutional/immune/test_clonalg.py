@@ -3,6 +3,7 @@ import numpy as np
 from optalg.unconstrained.evolutional import ClonAlg
 from optalg.stop_criteria import IterationNumberCriterion
 from ....inrange_assertion import InRangeAssertion
+from optalg.collector import SaveAllCollector
 
 
 class ClonAlgTests(unittest.TestCase, InRangeAssertion):
@@ -17,11 +18,3 @@ class ClonAlgTests(unittest.TestCase, InRangeAssertion):
         opt = ClonAlg(2, 10, criterion, [(-5, 5), (-5, 5)], to_replace=3)
         res = opt.optimize(self.f)
         self.assertInRange(res.x, np.array([[0], [0]]), 10**-1)
-
-    def test_history(self):
-        criterion = IterationNumberCriterion(15)
-        opt = ClonAlg(2, 7, criterion, [(-5, 5), (-5, 5)])
-        res = opt.optimize(self.f)
-
-        hist = res.x_history
-        self.assertEqual(hist.shape, (16, 7, 2))

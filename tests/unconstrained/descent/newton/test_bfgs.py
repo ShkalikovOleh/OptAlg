@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from optalg.unconstrained.descent import BFGS
 from optalg.line_search import ArmijoBacktracking
-from optalg.stop_criteria import GradientNormCriterion, IterationNumberCriterion
+from optalg.stop_criteria import GradientNormCriterion
 from ....inrange_assertion import InRangeAssertion
 
 
@@ -20,15 +20,3 @@ class BFGSTests(unittest.TestCase, InRangeAssertion):
         res = opt.optimize(self.f, np.array([-1, -2]))
 
         self.assertInRange(res.x, np.array([1, 1]), 10**-3)
-
-    def test_get_history(self):
-        iteration_count = 10
-        nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = ArmijoBacktracking(1, 0.5)
-
-        opt = BFGS(nCriterion, step_opt)
-        res = opt.optimize(self.f, np.array([-1, -2]))
-
-        hist = res.x_history
-        self.assertEqual(iteration_count, hist.shape[0] - 1)
-        self.assertEqual(2, hist.shape[1])

@@ -1,7 +1,8 @@
 import numpy as np
 from abc import abstractmethod
-from typing import Callable
+from typing import Callable, List
 from ...optimizer import Optimizer, OptimizeResult
+from ...collector import CollectorBase, reset_collectors, accept_collectors
 from ...stop_criteria import StopCriterion
 from .generator import Generator
 from .decoder import Decoder
@@ -10,7 +11,8 @@ from .decoder import Decoder
 class EvolutionalBase(Optimizer):
 
     def __init__(self, n_variables: int, population_size: int, stop_criterion: StopCriterion,
-                 generator: Generator, decoder: Decoder) -> None:
+                 generator: Generator, decoder: Decoder,
+                 population_collectors: List[CollectorBase]) -> None:
         assert n_variables > 0
         assert population_size > 0
 
@@ -20,6 +22,7 @@ class EvolutionalBase(Optimizer):
         self._stop_criterion = stop_criterion
         self._generator = generator
         self._decoder = decoder
+        self._population_collector = population_collectors
 
     @abstractmethod
     def _select(self, f: Callable, population: np.ndarray):
@@ -35,20 +38,28 @@ class EvolutionalBase(Optimizer):
 
     def optimize(self, f: Callable) -> OptimizeResult:
         population = self._generator(self._population_size, self._n_variables)
+        phenotypes = self._decoder(population)
+        n_iter = 0
 
-        history = []
-        history.append(self._decoder(population))
+        reset_collectors(self._population_collector)
+        accept_collectors(self._population_collector, population)
 
-        while not self._stop_criterion.match(f, history):
+        self._stop_criterion.accept(f, population)
+
+        while not self._stop_criterion.match():
+            n_iter += 1
+
             mating_pool = self._select(f, population)
             children = self._reproduce(f, mating_pool)
             population = self._replace(f, children, population)
-            history.append(self._decoder(population))
+            phenotypes = self._decoder(population)
 
-        idx = np.argmin(np.apply_along_axis(f, axis=1, arr=history[-1]))
-        xmin = history[-1][idx, :]
+            self._stop_criterion.accept(f, phenotypes)
+            accept_collectors(self._population_collector, phenotypes)
+
+        idx = np.argmin(np.apply_along_axis(f, axis=1, arr=phenotypes))
+        xmin = phenotypes[idx, :]
         res = OptimizeResult(f=f, x=xmin,
-                             n_iter=len(history) - 1,
-                             x_history=np.array(history))
+                             n_iter=n_iter)
 
         return res

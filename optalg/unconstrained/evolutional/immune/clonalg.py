@@ -1,6 +1,7 @@
 import numpy as np
-from typing import Callable
+from typing import Callable, List
 from ....stop_criteria import StopCriterion
+from ....collector import CollectorBase
 from ..evolutional_base import EvolutionalBase
 from ..generator import BinaryGenerator
 from ..decoder import GrayDecoder
@@ -10,14 +11,15 @@ class ClonAlg(EvolutionalBase):
 
     def __init__(self, n_variables: int, population_size: int,
                  stop_criterion: StopCriterion, range, clone_multiplier: int = 5,
-                 max_mutation_rate: float = 0.3, to_replace: int = 2) -> None:
+                 max_mutation_rate: float = 0.3, to_replace: int = 2,
+                 population_collectors: List[CollectorBase] = None) -> None:
 
         assert clone_multiplier > 0
         assert max_mutation_rate <= 1 and max_mutation_rate > 0
         assert to_replace >= 0
 
         super().__init__(n_variables, population_size, stop_criterion,
-                         BinaryGenerator(22), GrayDecoder(range))
+                         BinaryGenerator(22), GrayDecoder(range), population_collectors)
 
         self.__clone_mult = clone_multiplier
         self.__max_mut_rate = max_mutation_rate

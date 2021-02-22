@@ -1,8 +1,11 @@
-from typing import Callable
 import numpy as np
-from autograd import grad as agrad
 from abc import abstractmethod
+from autograd import grad as agrad
+from typing import Callable, List
 from ..descent_base import DescentOptimizerBase
+from ....stop_criteria import StopCriterion
+from ....line_search.line_searcher import LineSearcher
+from ....collector import SaveLastCollector, CollectorBase
 
 
 class ConjugateGradientsDescent(DescentOptimizerBase):
@@ -13,19 +16,22 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
     and the weighted direction from the previous iteration
     """
 
-    def __init__(self, stop_criterion, step_optimizer, renewal_step=None):
-        super().__init__(stop_criterion, step_optimizer)
-        if renewal_step is None:
-            renewal_step = 10000
+    def __init__(self, stop_criterion: StopCriterion,
+                 step_optimizer: LineSearcher,
+                 renewal_step: int = 1000,
+                 x_collectors: List[CollectorBase] = None,
+                 direction_collectors: List[CollectorBase] = None,
+                 step_collectors: List[CollectorBase] = None):
+
+        self._dir_collector = SaveLastCollector()
+        if direction_collectors is not None:
+            direction_collectors.append(self._dir_collector)
+        else:
+            direction_collectors = [self._dir_collector]
+
+        super().__init__(stop_criterion, step_optimizer,
+                         x_collectors, direction_collectors, step_collectors)
         self.__renewal_step = renewal_step
-
-    @property
-    def reset_iteration(self):
-        return self.__renewal_step
-
-    @reset_iteration.setter
-    def reset_iteration(self, value):
-        self.__renewal_step = value
 
     @abstractmethod
     def _b_step(self, gradk, gradprev, sprev):
@@ -38,15 +44,16 @@ class ConjugateGradientsDescent(DescentOptimizerBase):
         if self._iteration_number % self.__renewal_step == 0:
             pk = grad_value
         else:
-            pprev = self._phistory[-1]
-            pk = grad_value + self._b_step(grad_value, self._pgrad, pprev) * pprev
+            pprev = self._dir_collector.get_last()
+            pk = grad_value + \
+                self._b_step(grad_value, self._pgrad, pprev) * pprev
 
         self._iteration_number += 1
         self._pgrad = grad_value
 
         return pk
 
-    def optimize(self, f:Callable, x0: np.ndarray):
+    def optimize(self, f: Callable, x0: np.ndarray):
         self._grad = agrad(f)
         self._iteration_number = 0
         self._pgrad = np.zeros(shape=(x0.shape[0], 1))

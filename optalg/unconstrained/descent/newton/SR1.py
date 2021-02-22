@@ -1,19 +1,30 @@
 import numpy as np
-from .newton_base import NewtonBase
+from typing import List
+from .newton_base import QuasiNewtonBase
+from ....stop_criteria import StopCriterion
+from ....line_search.line_searcher import LineSearcher
+from ....collector import CollectorBase
 
 
-class SR1(NewtonBase):
+class SR1(QuasiNewtonBase):
 
-    def __init__(self, stop_ctiterion, step_optimizer) -> None:
-        super().__init__(stop_ctiterion, step_optimizer)
+    def __init__(self, stop_criterion: StopCriterion,
+                 step_optimizer: LineSearcher,
+                 x_collectors: List[CollectorBase] = None,
+                 direction_collectors: List[CollectorBase] = None,
+                 step_collectors: List[CollectorBase] = None,
+                 hessian_collectors: List[CollectorBase] = None) -> None:
+        super().__init__(stop_criterion, step_optimizer,
+                         x_collectors, direction_collectors,
+                         step_collectors, hessian_collectors)
 
     def _get_inverse_h(self, xk: np.ndarray) -> np.ndarray:
-        if len(self._phistory) == 0:
+        hk = self._last_hessian_collector.get_last()
+        if hk is None:
             return np.eye(xk.shape[0])
 
         gk = self._grad(xk) - self._pgrad
-        pk = xk - self._history[-2]
-        hk = self._inv_hessian_history[-1]
+        pk = self._last_step_collector.get_last() * self._last_direction_collector.get_last()
 
         t = pk - hk @ gk
         numerator = np.outer(t, t)

@@ -22,38 +22,28 @@ class ConjugateGradientsDescentTests(unittest.TestCase, InRangeAssertion):
 
     def test_fletcher_reeves(self):
         opt = FletcherReeves(self.__gnCriterion,
-                              self.__step_opt, self.__n)
+                             self.__step_opt, self.__n)
         res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_hestenes_stiefel(self):
         opt = HestenesStiefel(self.__gnCriterion,
-                             self.__step_opt, self.__n)
+                              self.__step_opt, self.__n)
         res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_polak_ribier(self):
         opt = PolakRibier(self.__gnCriterion,
-                              self.__step_opt, self.__n)
+                          self.__step_opt, self.__n)
         res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
 
     def test_dai_yuan(self):
         opt = DaiYuan(self.__gnCriterion,
-                          self.__step_opt, self.__n)
+                      self.__step_opt, self.__n)
         res = opt.optimize(self.f, self.__x0)
 
         self.assertInRange(res.x, self.__opt, 10**-3)
-
-    def test_get_history(self):
-        iteration_count = 10
-        nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = ArmijoBacktracking(1, 0.5)
-
-        opt = HestenesStiefel(nCriterion, step_opt, 3)
-        res = opt.optimize(self.f, self.__x0)
-
-        self.assertEqual(iteration_count, res.x_history.shape[0] - 1)

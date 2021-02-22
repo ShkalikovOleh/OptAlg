@@ -19,16 +19,4 @@ class NewtonTests(unittest.TestCase, InRangeAssertion):
         opt = Newton(gnCriterion, step_opt)
         res = opt.optimize(self.f, np.array([-3.5, -4]))
 
-        self.assertInRange(res.x, np.array([3,1]), 10**-3)
-
-    def test_get_history(self):
-        iteration_count = 10
-        nCriterion = IterationNumberCriterion(iteration_count)
-        step_opt = FixedStep(0.5)
-
-        opt = Newton(nCriterion, step_opt)
-        res=opt.optimize(self.f, np.array([-1, -2]))
-
-        hist = res.x_history
-        self.assertEqual(iteration_count, hist.shape[0] - 1)
-        self.assertEqual(2, hist.shape[1])
+        self.assertInRange(res.x, np.array([3, 1]), 10**-3)
